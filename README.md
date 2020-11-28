@@ -6,14 +6,14 @@ applicable templates. caches nodes of anonymous template definitions then stores
 import applicates
 
 proc map[T](s: seq[T], f: Applicate): seq[T] =
-  # this is a proc, applicates instantiated inside foreign procs will not be able
-  # to access local symbols, just a heads up
+  # this is a proc, applicates instantiated inside foreign procs will not
+  # capture locals, just a heads up
   result.newSeq(s.len)
   for i in 0..<s.len:
     result[i] =
       f.apply(s[i]) # maybe a little long
       # or
-      f!(s[i]) # this does not have great precedence
+      f!(s[i]) # this can break very easily to precedence
       # or
       (s[i]) |> f # ugly, also you need to do tuples like ((1, 2)) |> f to support multiple arguments
 
@@ -21,5 +21,7 @@ doAssert @[1, 2, 3, 4, 5].map(applicate(x) do: x - 1) == @[0, 1, 2, 3, 4]
 # alternate syntax (doesnt look great but i cant think of anything better):
 doAssert @[1, 2, 3, 4, 5].map(x !=> x * 2) == @[2, 4, 6, 8, 10]
 ```
+
+i don't have very extensive tests for this, i might add as more use cases come up. original idea at https://github.com/nim-lang/RFCs/issues/212
 
 1 limitation is you can't type check these. you might think of a way with concepts but it's probably going to be way too complex to work
