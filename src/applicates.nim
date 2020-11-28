@@ -1,53 +1,53 @@
 import macros
 
 type
-  ApplateId* = distinct int
-    ## index of applate definition in applate cache
-  Applate* = static ApplateId
-    ## static version of ApplateId to use for argument types
+  ApplicateId* = distinct int
+    ## index of applicate definition in applicate cache
+  Applicate* = static ApplicateId
+    ## static version of ApplicateId to use for argument types
 
-const useCache = defined(applatesUseMacroCache)
+const useCache = defined(applicatesUseMacroCache)
 when useCache or defined(nimdoc):
   import macrocache
-  const applateTemplateCache* = CacheSeq "applates.templates"
+  const applicateTemplateCache* = CacheSeq "applicates.templates"
     ## the cache containing the anonymous template definition nodes of
-    ## each applate. can be indexed by the ID of an applate to receive
+    ## each applicate. can be indexed by the ID of an applicate to receive
     ## its template node, which is meant to be put in user code and invoked
     ## 
-    ## uses a compileTime seq by default, if you define `applatesUseMacroCache`
+    ## uses a compileTime seq by default, if you define `applicatesUseMacroCache`
     ## then it will use Nim's `macrocache` types.
 else:
-  var applateTemplateCache* {.compileTime.}: seq[NimNode]
+  var applicateTemplateCache* {.compileTime.}: seq[NimNode]
 
-macro applate*(params, body): untyped =
-  ## creates an applate. when anonymous, returns applate id literal
-  ## (compatible with Applate/ApplateId). when a name is specified,
-  ## it defines that name as a constant with the value being the applate id.
+macro applicate*(params, body): untyped =
+  ## creates an applicate. when anonymous, returns applicate id literal
+  ## (compatible with Applicate/ApplicateId). when a name is specified,
+  ## it defines that name as a constant with the value being the applicate id.
   ## 
   ## note: the return type is untyped by default unlike templates.
   runnableExamples:
-    applate foo(name: untyped, val: int):
+    applicate foo(name: untyped, val: int):
       let name = val
     
     foo.apply(x, 5)
     doAssert x == 5
 
-    template double(appl: Applate) =
+    template double(appl: Applicate) =
       appl.apply()
       appl.apply()
     
     var c = 0
     when false: # runnableExamples does not handle do: well
-      double(applate do:
-        double(applate do:
-          double(applate do: inc c)))
+      double(applicate do:
+        double(applicate do:
+          double(applicate do: inc c)))
     else:
-      double applate(
-        double applate(
-          double applate(inc(c))))
+      double applicate(
+        double applicate(
+          double applicate(inc(c))))
     doAssert c == 8
-  let id = len(applateTemplateCache)
-  result = newCall(bindSym"ApplateId", newLit(id))
+  let id = len(applicateTemplateCache)
+  result = newCall(bindSym"ApplicateId", newLit(id))
   var params = params
   var returnType = ident"untyped"
   var pragma = newEmptyNode()
@@ -92,7 +92,7 @@ macro applate*(params, body): untyped =
         newIdentDefs(p[0], p[1])
       else:
         newIdentDefs(p, newEmptyNode())
-  add(applateTemplateCache,
+  add(applicateTemplateCache,
     newTree(nnkTemplateDef,
       # should be ident here, otherwise declared breaks
       ident repr genSym(nskTemplate, "apply" & $id),
@@ -102,22 +102,22 @@ macro applate*(params, body): untyped =
       newEmptyNode(),
       body))
 
-template applate*(body): untyped =
-  ## creates anonymous applate with no arguments
-  applate((), body)
+template applicate*(body): untyped =
+  ## creates anonymous applicate with no arguments
+  applicate((), body)
 
 template `!=>`*(params, body): untyped =
-  ## infix version of applate, same syntax
-  applate(params, body)
+  ## infix version of applicate, same syntax
+  applicate(params, body)
 
 template `!=>`*(body): untyped =
-  ## anonymous applate no arguments
-  applate(body)
+  ## anonymous applicate no arguments
+  applicate(body)
 
-macro apply*(appl: Applate, args: varargs[untyped]): untyped =
-  ## applies the applate by injecting the applate template
+macro apply*(appl: Applicate, args: varargs[untyped]): untyped =
+  ## applies the applicate by injecting the applicate template
   ## (if not in scope already) then calling it with the given arguments
-  let a = applateTemplateCache[appl.int]
+  let a = applicateTemplateCache[appl.int]
   let templName = ident repr a[0]
   let aCall = newCall(templName)
   for arg in args:
@@ -127,7 +127,7 @@ macro apply*(appl: Applate, args: varargs[untyped]): untyped =
       `a`
     `aCall`
 
-macro `!`*(appl: Applate, arg: untyped): untyped =
+macro `!`*(appl: Applicate, arg: untyped): untyped =
   ## attempted operator syntax for `apply`. has low precedence though
   ## if `arg` is in parentheses then its arguments are broken up,
   ## otherwise it is passed as a single argument
@@ -137,6 +137,6 @@ macro `!`*(appl: Applate, arg: untyped): untyped =
   else: args.add(arg)
   result = getAst apply(appl, args)
 
-template `|>`*(arg: untyped, appl: Applate): untyped =
+template `|>`*(arg: untyped, appl: Applicate): untyped =
   ## reversed version of `!` with better precedence
   appl ! arg
