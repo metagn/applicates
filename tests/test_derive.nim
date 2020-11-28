@@ -1,6 +1,6 @@
-import unittest, applates, hashes
+import unittest, applicates, hashes
 
-type Class = Applate
+type Class = Applicate
 
 template derive(T: type, intf: Class) =
   intf.apply(T)
@@ -9,7 +9,7 @@ template mix(h: var Hash, i) = h = h !& i
 template finish(h: var Hash) = h = !$ h
 
 template class(name, decls) =
-  applate `name`(Self):
+  applicate `name`(Self):
     decls
 
 class Hashable:
