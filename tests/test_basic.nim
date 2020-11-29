@@ -1,5 +1,31 @@
 import unittest, applicates
 
+test "syntax":
+  applicate double(x: SomeNumber) -> typeof(x):
+    x * 2
+  
+  check double.apply(3) == 6
+
+  proc foo: auto {.makeApplicate.} = x
+  block:
+    let x = 5
+    check foo.apply() == 5
+  block:
+    let x = "abc"
+    check foo.apply() == "abc"
+  
+  check "abc" |> (x !=> x[^1]) == 'c'
+  check (a, 3) |> ((name, value) !=> (let name = value; name)) == 3
+
+  makeTypedApplicate:
+    template useIt =
+      check it == realIt
+
+  let realIt = 5
+  block:
+    let it = realIt
+    useIt.apply()
+
 test "map test":
   proc map[T](s: seq[T], f: Applicate): seq[T] =
     result.newSeq(s.len)
@@ -14,7 +40,7 @@ test "operators":
   proc map[T](s: seq[T], f: Applicate): seq[T] =
     result.newSeq(s.len)
     for i in 0..<s.len:
-      result[i] = f ! (s[i])
+      result[i] = f.apply(s[i])
 
   check @[1, 2, 3, 4, 5].map(x !=> x * 2) == @[2, 4, 6, 8, 10]
 
@@ -26,7 +52,7 @@ test "operators":
   check @[1, 2, 3, 4, 5].filter(x !=> bool(x and 1)) == @[1, 3, 5]
 
 test "cfor":
-  iterator cfor(a, b, c: static ApplicateId): tuple[] = # Applicate doesnt work here
+  iterator cfor(a, b, c: static ApplicatePtr): tuple[] = # Applicate doesnt work here
     apply a
     while apply b:
       yield ()
@@ -36,3 +62,33 @@ test "cfor":
   for x in cfor(() {.dirty.} !=> (var i = 0;), !=> (i < 5), !=> (inc i)):
     inc i
   check i == 5
+
+import options
+
+test "option unwrap":
+  template unwrap[T](o: Option[T], someCb, noneCb: static ApplicatePtr) =
+    if o.isSome:
+      let t {.used.} = o.unsafeGet
+      someCb.apply(t)
+    else:
+      noneCb.apply()
+
+  let a = some(3)
+  let b = none(string)
+
+  var aCorrect = false
+  a.unwrap(
+    applicate(n is int) do:
+      aCorrect = true
+      check(n == 3),
+    applicate do:
+      aCorrect = false)
+  check aCorrect
+
+  var bCorrect = false
+  b.unwrap(
+    applicate(_) do:
+      bCorrect = false,
+    applicate do:
+      bCorrect = true)
+  check bCorrect
