@@ -1,10 +1,10 @@
 import macros
 
 type
-  ApplicatePtr* = distinct int
+  Applicate* = distinct int
     ## "pointer to" (index of) applicate AST
-  Applicate* = static ApplicatePtr
-    ## static type of ApplicatePtr to use for types of arguments
+  ApplicateArg* = static Applicate
+    ## `static Applicate` to use for types of arguments
 
 const useCache = defined(applicatesUseMacroCache)
 when useCache or defined(nimdoc):
@@ -36,7 +36,7 @@ macro makeApplicate*(body): untyped =
     for st in body: result.add(getAst(makeApplicate(st)))
   of RoutineNodes - {nnkDo, nnkLambda}:
     let id = len(applicateRoutineCache)
-    result = newConstStmt(ident repr body[0], newCall(bindSym"ApplicatePtr", newLit(id)))
+    result = newConstStmt(ident repr body[0], newCall(bindSym"Applicate", newLit(id)))
     let body = copy(body)
     body[0] = ident repr gensym(
       case body.kind
@@ -88,7 +88,7 @@ macro makeTypedApplicate*(body: untyped): untyped =
 macro applicate*(params, body): untyped =
   ## generates a template based on the params and body and registers it as a typed
   ## applicate. when anonymous, returns applicate id literal
-  ## (compatible with Applicate/ApplicatePtr). when a name is specified (using
+  ## (compatible with ApplicateArg/Applicate). when a name is specified (using
   ## call/object constructor syntax), defines that name as a constant with the
   ## value being the applicate id.
   ## 
@@ -105,7 +105,7 @@ macro applicate*(params, body): untyped =
     foo.apply(x, 5)
     doAssert x == 5
 
-    template double(appl: Applicate) =
+    template double(appl: ApplicateArg) =
       appl.apply()
       appl.apply()
     
@@ -211,11 +211,11 @@ template `!=>`*(body): untyped =
   ## anonymous applicate no arguments
   applicate(body)
 
-proc node*(appl: ApplicatePtr): NimNode {.compileTime.} =
+proc node*(appl: Applicate): NimNode {.compileTime.} =
   ## retrieves the node of the applicate from the cache
   applicateRoutineCache[appl.int]
 
-macro apply*(appl: Applicate, args: varargs[untyped]): untyped =
+macro apply*(appl: ApplicateArg, args: varargs[untyped]): untyped =
   ## applies the applicate by injecting the applicate routine
   ## (if not in scope already) then calling it with the given arguments
   let a = appl.node
@@ -229,12 +229,12 @@ macro apply*(appl: Applicate, args: varargs[untyped]): untyped =
     `aCall`
 
 when defined(nimHasCallOperator) or defined(nimdoc):
-  template `()`*(appl: Applicate, args: varargs[untyped]): untyped =
+  template `()`*(appl: ApplicateArg, args: varargs[untyped]): untyped =
     ## Call operator alias for `apply`. Must turn on experimental Nim feature
     ## `callOperator` to use. Note that this experimental feature seems to be very broken. 
     appl.apply(args)
 
-macro `|>`*(arg: untyped, appl: Applicate): untyped =
+macro `|>`*(arg: untyped, appl: ApplicateArg): untyped =
   ## attempted operator syntax for `apply`. if `arg` is in parentheses
   ## then its arguments are broken up, otherwise it is passed as a single argument
   var args = newNimNode(nnkArgList)
