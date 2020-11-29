@@ -5,7 +5,7 @@
 ```nim
 import applicates
 
-proc map[T](s: seq[T], f: Applicate): seq[T] =
+proc map[T](s: seq[T], f: ApplicateArg): seq[T] =
   result.newSeq(s.len)
   for i in 0..<s.len:
     result[i] =

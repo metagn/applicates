@@ -2,7 +2,7 @@
 
 import unittest, applicates, macros
 
-macro overload(ap: Applicate, cond, body: untyped) =
+macro overload(ap: ApplicateArg, cond, body: untyped) =
   let branch = newTree(nnkElifBranch, cond, body)
   let procBody = ap.node[^1]
   if procBody.kind == nnkEmpty:
@@ -12,7 +12,7 @@ macro overload(ap: Applicate, cond, body: untyped) =
   else:
     procBody[0].add(branch)
 
-macro overload(ap: Applicate, body: untyped) =
+macro overload(ap: ApplicateArg, body: untyped) =
   let branch = newTree(nnkElse, body)
   let procBody = ap.node[^1]
   if procBody.kind == nnkEmpty:

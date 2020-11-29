@@ -27,7 +27,7 @@ test "syntax":
     useIt.apply()
 
 test "map test":
-  proc map[T](s: seq[T], f: Applicate): seq[T] =
+  proc map[T](s: seq[T], f: ApplicateArg): seq[typeof(f.apply(s[0]))] =
     result.newSeq(s.len)
     for i in 0..<s.len:
       result[i] = f.apply(s[i])
@@ -37,14 +37,14 @@ test "map test":
   check @[1, 2, 3, 4, 5].map(double) == @[2, 4, 6, 8, 10]
 
 test "operators":
-  proc map[T](s: seq[T], f: Applicate): seq[T] =
+  proc map[T](s: seq[T], f: ApplicateArg): seq[typeof(f.apply(s[0]))] =
     result.newSeq(s.len)
     for i in 0..<s.len:
       result[i] = f.apply(s[i])
 
   check @[1, 2, 3, 4, 5].map(x !=> x * 2) == @[2, 4, 6, 8, 10]
 
-  proc filter[T](s: seq[T], f: Applicate): seq[T] =
+  proc filter[T](s: seq[T], f: ApplicateArg): seq[T] =
     for i in 0..<s.len:
       if s[i] |> f:
         result.add(s[i])
@@ -52,7 +52,7 @@ test "operators":
   check @[1, 2, 3, 4, 5].filter(x !=> bool(x and 1)) == @[1, 3, 5]
 
 test "cfor":
-  iterator cfor(a, b, c: static ApplicatePtr): tuple[] = # Applicate doesnt work here
+  iterator cfor(a, b, c: static Applicate): tuple[] = # ApplicateArg doesnt work here
     apply a
     while apply b:
       yield ()
@@ -66,7 +66,7 @@ test "cfor":
 import options
 
 test "option unwrap":
-  template unwrap[T](o: Option[T], someCb, noneCb: static ApplicatePtr) =
+  template unwrap[T](o: Option[T], someCb, noneCb: Applicate) =
     if o.isSome:
       let t {.used.} = o.unsafeGet
       someCb.apply(t)
