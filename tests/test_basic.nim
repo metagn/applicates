@@ -27,7 +27,7 @@ test "syntax":
     useIt.apply()
 
 test "map test":
-  proc map[T](s: seq[T], f: ApplicateArg): seq[typeof(f.apply(s[0]))] =
+  proc map[T](s: seq[T], f: ApplicateArg): seq[T] =
     result.newSeq(s.len)
     for i in 0..<s.len:
       result[i] = f.apply(s[i])
@@ -36,23 +36,28 @@ test "map test":
   applicate double(x): x * 2
   check @[1, 2, 3, 4, 5].map(double) == @[2, 4, 6, 8, 10]
 
-test "operators":
-  proc map[T](s: seq[T], f: ApplicateArg): seq[typeof(f.apply(s[0]))] =
-    result.newSeq(s.len)
-    for i in 0..<s.len:
-      result[i] = f.apply(s[i])
-
-  check @[1, 2, 3, 4, 5].map(x !=> x * 2) == @[2, 4, 6, 8, 10]
-
-  proc filter[T](s: seq[T], f: ApplicateArg): seq[T] =
-    for i in 0..<s.len:
-      if s[i] |> f:
-        result.add(s[i])
+test "applying":
+  template iterCollectSeq(iter: untyped): untyped =
+    var s: seq[typeof(iter, typeOfIter)]
+    for x in iter:
+      s.add(x)
+    s
   
-  check @[1, 2, 3, 4, 5].filter(x !=> bool(x and 1)) == @[1, 3, 5]
+  iterator map[T](s: seq[T], f: ApplicateArg): auto =
+    for x in s:
+      yield f.apply(x)
+
+  check iterCollectSeq(@[1, 2, 3, 4, 5].map(x !=> x * 2)) == @[2, 4, 6, 8, 10]
+
+  iterator filter[T](s: seq[T], f: ApplicateArg): auto =
+    for x in s:
+      if x |> f:
+        yield x
+  
+  check iterCollectSeq(@[1, 2, 3, 4, 5].filter(x !=> bool(x and 1))) == @[1, 3, 5]
 
 test "cfor":
-  iterator cfor(a, b, c: static Applicate): tuple[] = # ApplicateArg doesnt work here
+  iterator cfor(a, b, c: static Applicate): tuple[] =
     apply a
     while apply b:
       yield ()
@@ -66,29 +71,19 @@ test "cfor":
 import options
 
 test "option unwrap":
-  template unwrap[T](o: Option[T], someCb, noneCb: Applicate) =
+  proc unwrap[T](o: Option[T], someCb, noneCb: static Applicate): auto =
     if o.isSome:
-      let t {.used.} = o.unsafeGet
-      someCb.apply(t)
+      someCb.apply(o.unsafeGet)
     else:
       noneCb.apply()
 
   let a = some(3)
   let b = none(string)
 
-  var aCorrect = false
-  a.unwrap(
-    applicate(n is int) do:
-      aCorrect = true
-      check(n == 3),
-    applicate do:
-      aCorrect = false)
-  check aCorrect
+  check a.unwrap(
+    (n: int) !=> (check(n == 3); true),
+    !=> false)
 
-  var bCorrect = false
-  b.unwrap(
-    applicate(_) do:
-      bCorrect = false,
-    applicate do:
-      bCorrect = true)
-  check bCorrect
+  check b.unwrap(
+    _ !=> false,
+    !=> true)
