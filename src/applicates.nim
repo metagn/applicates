@@ -1,13 +1,22 @@
 import macros
 
-type
-  Applicate* = distinct int
-    ## "pointer to" (index of) applicate AST
-  ApplicateArg* = static Applicate
-    ## `static Applicate` to use for types of arguments
+const cacheUseTable = defined(applicatesCacheUseTable) and not defined(nimdoc)
 
-const useCache = defined(applicatesUseMacroCache)
-when useCache or defined(nimdoc):
+when cacheUseTable:
+  type Applicate* = distinct string
+else:
+  type
+    Applicate* = distinct int
+      ## "pointer to" (index of) applicate AST. if you define
+      ## ``applicatesCacheUseTable`` this will be a string
+
+type ApplicateArg* = static Applicate
+  ## `static Applicate` to use for types of arguments
+
+when cacheUseTable:
+  import macrocache
+  const applicateRoutineCache* = CacheTable "applicates.routines.table"
+elif defined(applicatesUseMacroCache) or defined(nimdoc):
   import macrocache
   const applicateRoutineCache* = CacheSeq "applicates.routines"
     ## the cache containing the routine definition nodes of
@@ -15,7 +24,9 @@ when useCache or defined(nimdoc):
     ## its routine node, which is meant to be put in user code and invoked
     ## 
     ## uses a compileTime seq by default, if you define `applicatesUseMacroCache`
-    ## then it will use Nim's `macrocache` types.
+    ## then it will use Nim's `macrocache` types, if you define
+    ## `applicatesCacheUseTable` then it will use a `CacheTable` with
+    ## unique strings
 else:
   var applicateRoutineCache* {.compileTime.}: seq[NimNode]
 
@@ -35,8 +46,9 @@ macro makeApplicate*(body): untyped =
     result = newStmtList()
     for st in body: result.add(getAst(makeApplicate(st)))
   of RoutineNodes - {nnkDo, nnkLambda}:
-    let id = len(applicateRoutineCache)
-    result = newConstStmt(ident repr body[0], newCall(bindSym"Applicate", newLit(id)))
+    let num = len(applicateRoutineCache)
+    let key = when cacheUseTable: $num else: num
+    result = newConstStmt(ident repr body[0], newCall(bindSym"Applicate", newLit(key)))
     let body = copy(body)
     body[0] = ident repr gensym(
       case body.kind
@@ -47,15 +59,15 @@ macro makeApplicate*(body): untyped =
       of nnkIteratorDef: nskIterator
       of nnkMethodDef: nskMethod
       of nnkFuncDef: nskFunc
-      else: nskTemplate, "appl" & $id)
-    add(applicateRoutineCache, body)
+      else: nskTemplate, "appl" & $num)
+    when cacheUseTable:
+      applicateRoutineCache[key] = body
+    else:
+      add(applicateRoutineCache, body)
   else:
     error("cannot turn non-routine into applicate", body)
 
-macro realMakeTypedApplicate(body: typed): untyped =
-  result = getAst(makeApplicate(body))
-
-macro makeTypedApplicate*(body: untyped): untyped =
+macro makeApplicateFromTyped*(body: typed): untyped =
   ## Registers applicate with given routine(s), but forces it to be type
   ## checked first (`body` is only `untyped` here because a `used` pragma
   ## is injected to get rid of a warning). This lets it use symbols that are
@@ -63,6 +75,22 @@ macro makeTypedApplicate*(body: untyped): untyped =
   ## then *only* local symbols are accessible.
   ## 
   ## Works best for templates and macros, so `applicate` uses this.
+  ## 
+  ## **Note:** This will generate an unused warning for the given routine,
+  ## `makeTypedApplicate` automatically generates a `used` pragma but only on
+  ## untyped routine expressions.
+  ## 
+  case body.kind
+  of nnkStmtList:
+    result = newStmtList()
+    for st in body: result.add(getAst(makeApplicateFromTyped(st)))
+  of RoutineNodes - {nnkDo, nnkLambda}:
+    result = getAst(makeApplicate(body))
+  else:
+    error("cannot turn non-routine into applicate", body)
+
+macro makeTypedApplicate*(body: untyped): untyped =
+  ## Injects `used` pragma into `body` and calls `makeApplicateFromTyped`.
   runnableExamples:
     makeTypedApplicate:
       template useIt =
@@ -81,7 +109,7 @@ macro makeTypedApplicate*(body: untyped): untyped =
       body[4] = newTree(nnkPragma, ident"used")
     else:
       body[4].add(ident"used")
-    result = getAst(realMakeTypedApplicate(body))
+    result = getAst(makeApplicateFromTyped(body))
   else:
     error("cannot turn non-routine into applicate", body)
 
@@ -213,7 +241,7 @@ template `!=>`*(body): untyped =
 
 proc node*(appl: Applicate): NimNode {.compileTime.} =
   ## retrieves the node of the applicate from the cache
-  applicateRoutineCache[appl.int]
+  applicateRoutineCache[(when cacheUseTable: string else: int)(appl)]
 
 macro apply*(appl: ApplicateArg, args: varargs[untyped]): untyped =
   ## applies the applicate by injecting the applicate routine

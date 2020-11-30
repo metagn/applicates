@@ -1,27 +1,42 @@
-# this test might break in the future with macrocache as it might not be possible to modify items
+import unittest, applicates, macros, macrocache
 
-import unittest, applicates, macros
+type Overloadable = object
+  appl: Applicate
+  overloads: CacheSeq
 
-macro overload(ap: ApplicateArg, cond, body: untyped) =
-  let branch = newTree(nnkElifBranch, cond, body)
-  let procBody = ap.node[^1]
-  if procBody.kind == nnkEmpty:
-    ap.node[^1] = newStmtList(newTree(nnkWhenStmt, branch))
-  elif procBody[0][^1].kind == nnkElse:
-    procBody[0].insert(procBody[0].len - 2, branch)
-  else:
-    procBody[0].add(branch)
+macro overload(c: static Overloadable, cond, body: untyped) =
+  c.overloads.add(newTree(nnkElifBranch, cond, body))
+macro overload(c: static Overloadable, body: untyped) =
+  c.overloads.add(newTree(nnkElse, body))
 
-macro overload(ap: ApplicateArg, body: untyped) =
-  let branch = newTree(nnkElse, body)
-  let procBody = ap.node[^1]
-  if procBody.kind == nnkEmpty:
-    ap.node[^1] = newStmtList(newTree(nnkWhenStmt, branch))
-  else:
-    procBody[0].add(branch)
+macro overloadable(body) =
+  let tempNameStr = repr genSym(nskConst, "temp")
+  let tempName = ident tempNameStr
+  let body = copy body
+  let oldName = body[0]
+  body[0] = tempName
+  if body[^1].kind == nnkEmpty: body[^1] = newStmtList()
+  body[^1].add(quote do:
+    const cache = CacheSeq("overloads." & `tempNameStr`)
+    macro loadOverloads(): untyped =
+      result = newTree(nnkWhenStmt)
+      for o in cache:
+        let o = copy o
+        if result.len > 0 and result[^1].kind == nnkElse:
+          result.insert(result.len - 1, o)
+        else:
+          result.add(o)
+    loadOverloads())
+  result = quote do:
+    makeApplicate(`body`)
+    const `oldName` = Overloadable(appl: `tempName`,
+      overloads: CacheSeq("overloads." & `tempNameStr`))
+
+template apply(c: static Overloadable, args: varargs[untyped]): untyped =
+  c.appl.apply(args)
 
 test "overload works":
-  proc foo(x: static int): string {.makeApplicate.}
+  proc foo(x: static int): string {.overloadable.}
 
   overload(foo, x == 1):
     "one"

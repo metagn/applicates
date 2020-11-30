@@ -11,8 +11,8 @@ proc map[T](s: seq[T], f: ApplicateArg): seq[T] =
     result[i] =
       f.apply(s[i]) # maybe a little long
       # or
-      (s[i]) |> f # ugly, also you need to do tuples like ((1, 2)) |> f to support multiple arguments
-      # or, if --experimental:callOperator is turned on (even though this feature seems to be fairly broken)
+      s[i] |> f # noisy, also you need to do tuples like ((1, 2)) |> f as (1, 2) |> f becomes f.apply(1, 2)
+      # or, if --experimental:callOperator is turned on (undocumented, maybe broken feature though a test for it works)
       f(s[i])
 
 doAssert @[1, 2, 3, 4, 5].map(applicate(x) do: x - 1) == @[0, 1, 2, 3, 4]
@@ -20,6 +20,6 @@ doAssert @[1, 2, 3, 4, 5].map(applicate(x) do: x - 1) == @[0, 1, 2, 3, 4]
 doAssert @[1, 2, 3, 4, 5].map(x !=> x * 2) == @[2, 4, 6, 8, 10]
 ```
 
-i don't have very extensive tests for this, i might add as more use cases come up.
+tests show some of the possibilities with this construct
 
-1 limitation is you can't type check these. you might think of a way with concepts but it's probably going to be way too complex to work
+1 limitation is you can't really annotate these with types. you might think of a way with concepts but it's probably going to be way too complex to work
