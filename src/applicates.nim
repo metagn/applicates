@@ -8,7 +8,7 @@ else:
   type
     Applicate* = distinct int
       ## "pointer to" (index of) applicate AST. if you define
-      ## ``applicatesCacheUseTable`` this will be a string
+      ## ``applicatesCacheUseTable`` this will be a distinct string
 
 type ApplicateArg* = static Applicate
   ## `static Applicate` to use for types of arguments
