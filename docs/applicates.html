@@ -95,9 +95,9 @@ function main() {
   <a class="reference reference-toplevel" href="#7" id="57">Types</a>
   <ul class="simple simple-toc-section">
       <li><a class="reference" href="#Applicate"
-    title="Applicate = distinct int"><wbr />ApplicateArg<wbr />Ptr<span class="attachedType"></span></a></li>
+    title="Applicate = distinct int"><wbr />Applicate<span class="attachedType"></span></a></li>
   <li><a class="reference" href="#ApplicateArg"
-    title="ApplicateArg = static Applicate"><wbr />ApplicateArg<span class="attachedType"></span></a></li>
+    title="ApplicateArg = static Applicate"><wbr />Applicate<wbr />Arg<span class="attachedType"></span></a></li>
 
   </ul>
 </li>
@@ -113,7 +113,7 @@ function main() {
   <a class="reference reference-toplevel" href="#12" id="62">Procs</a>
   <ul class="simple simple-toc-section">
       <ul class="simple nested-toc-section">node
-      <li><a class="reference" href="#node%2CApplicatePtr"
+      <li><a class="reference" href="#node%2CApplicate"
     title="node(appl: Applicate): NimNode">node,Applicate<span class="attachedType">Applicate</span></a></li>
 
   </ul>
@@ -124,14 +124,16 @@ function main() {
   <a class="reference reference-toplevel" href="#17" id="67">Macros</a>
   <ul class="simple simple-toc-section">
       <li><a class="reference" href="#makeApplicate.m"
-    title="makeApplicate(body): untyped"><wbr />make<wbr />ApplicateArg<span class="attachedType"></span></a></li>
+    title="makeApplicate(body): untyped"><wbr />make<wbr />Applicate<span class="attachedType"></span></a></li>
+  <li><a class="reference" href="#makeApplicateFromTyped.m%2Ctyped"
+    title="makeApplicateFromTyped(body: typed): untyped"><wbr />make<wbr />Applicate<wbr />From<wbr />Typed<span class="attachedType"></span></a></li>
   <li><a class="reference" href="#makeTypedApplicate.m%2Cuntyped"
-    title="makeTypedApplicate(body: untyped): untyped"><wbr />make<wbr />Typed<wbr />ApplicateArg<span class="attachedType"></span></a></li>
+    title="makeTypedApplicate(body: untyped): untyped"><wbr />make<wbr />Typed<wbr />Applicate<span class="attachedType"></span></a></li>
   <li><a class="reference" href="#applicate.m%2C%2C"
     title="applicate(params, body): untyped"><wbr />applicate<span class="attachedType"></span></a></li>
-  <li><a class="reference" href="#apply.m%2CApplicate%2Cvarargs%5Buntyped%5D"
+  <li><a class="reference" href="#apply.m%2CApplicateArg%2Cvarargs%5Buntyped%5D"
     title="apply(appl: ApplicateArg; args: varargs[untyped]): untyped"><wbr />apply<span class="attachedType">ApplicateArg</span></a></li>
-  <li><a class="reference" href="#%7C%3E.m%2Cuntyped%2CApplicate"
+  <li><a class="reference" href="#%7C%3E.m%2Cuntyped%2CApplicateArg"
     title="`|&gt;`(arg: untyped; appl: ApplicateArg): untyped"><wbr />`|&gt;`<span class="attachedType">ApplicateArg</span></a></li>
 
   </ul>
@@ -145,7 +147,7 @@ function main() {
     title="`!=&gt;`(params, body): untyped"><wbr />`!=&gt;`<span class="attachedType"></span></a></li>
   <li><a class="reference" href="#%21%3D%3E.t"
     title="`!=&gt;`(body): untyped"><wbr />`!=&gt;`<span class="attachedType"></span></a></li>
-  <li><a class="reference" href="#%28%29.t%2CApplicate%2Cvarargs%5Buntyped%5D"
+  <li><a class="reference" href="#%28%29.t%2CApplicateArg%2Cvarargs%5Buntyped%5D"
     title="`()`(appl: ApplicateArg; args: varargs[untyped]): untyped"><wbr />`()`<span class="attachedType">ApplicateArg</span></a></li>
 
   </ul>
@@ -165,22 +167,22 @@ function main() {
 <dt><pre><a href="applicates.html#Applicate"><span class="Identifier">Applicate</span></a> <span class="Other">=</span> <span class="Keyword">distinct</span> <span class="Identifier">int</span></pre></dt>
 <dd>
 
-&quot;pointer to&quot; (index of) applicate AST
+&quot;pointer to&quot; (index of) applicate AST. if you define <tt class="docutils literal"><span class="pre">applicatesCacheUseTable</span></tt> this will be a distinct string
 &nbsp;&nbsp;<a
-href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L4"
+href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L9"
 class="link-seesrc" target="_blank">Source</a>
-<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L4" class="link-seesrc" target="_blank" >Edit</a>
+<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L9" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 <a id="ApplicateArg"></a>
 <dt><pre><a href="applicates.html#ApplicateArg"><span class="Identifier">ApplicateArg</span></a> <span class="Other">=</span> <span class="Identifier">static</span> <span class="Identifier">Applicate</span></pre></dt>
 <dd>
 
-static type of Applicate to use for types of arguments
+<tt class="docutils literal"><span class="pre">static Applicate</span></tt> to use for types of arguments
 &nbsp;&nbsp;<a
-href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L6"
+href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L13"
 class="link-seesrc" target="_blank">Source</a>
-<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L6" class="link-seesrc" target="_blank" >Edit</a>
+<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L13" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 
@@ -193,12 +195,12 @@ class="link-seesrc" target="_blank">Source</a>
 <dd>
 
 <p>the cache containing the routine definition nodes of each applicate. can be indexed by the ID of an applicate to receive its routine node, which is meant to be put in user code and invoked</p>
-<p>uses a compileTime seq by default, if you define <tt class="docutils literal"><span class="pre">applicatesUseMacroCache</span></tt> then it will use Nim's <tt class="docutils literal"><span class="pre">macrocache</span></tt> types.</p>
+<p>uses a compileTime seq by default, if you define <tt class="docutils literal"><span class="pre">applicatesUseMacroCache</span></tt> then it will use Nim's <tt class="docutils literal"><span class="pre">macrocache</span></tt> types, if you define <tt class="docutils literal"><span class="pre">applicatesCacheUseTable</span></tt> then it will use a <tt class="docutils literal"><span class="pre">CacheTable</span></tt> with unique strings</p>
 
 &nbsp;&nbsp;<a
-href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L12"
+href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L21"
 class="link-seesrc" target="_blank">Source</a>
-<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L12" class="link-seesrc" target="_blank" >Edit</a>
+<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L21" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 
@@ -207,14 +209,14 @@ class="link-seesrc" target="_blank">Source</a>
 <h1><a class="toc-backref" href="#12">Procs</a></h1>
 <dl class="item">
 <a id="node,Applicate"></a>
-<dt><pre><span class="Keyword">proc</span> <a href="#node%2CApplicatePtr"><span class="Identifier">node</span></a><span class="Other">(</span><span class="Identifier">appl</span><span class="Other">:</span> <a href="applicates.html#Applicate"><span class="Identifier">Applicate</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span> <span><span class="Other">{</span><span class="Other pragmadots">...</span><span class="Other">}</span></span><span class="pragmawrap"><span class="Other">{.</span><span class="pragma"><span class="Identifier">compileTime</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span><span class="Other">.}</span></span></pre></dt>
+<dt><pre><span class="Keyword">proc</span> <a href="#node%2CApplicate"><span class="Identifier">node</span></a><span class="Other">(</span><span class="Identifier">appl</span><span class="Other">:</span> <a href="applicates.html#Applicate"><span class="Identifier">Applicate</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span> <span><span class="Other">{</span><span class="Other pragmadots">...</span><span class="Other">}</span></span><span class="pragmawrap"><span class="Other">{.</span><span class="pragma"><span class="Identifier">compileTime</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span><span class="Other">.}</span></span></pre></dt>
 <dd>
 
 retrieves the node of the applicate from the cache
 &nbsp;&nbsp;<a
-href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L214"
+href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L242"
 class="link-seesrc" target="_blank">Source</a>
-<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L214" class="link-seesrc" target="_blank" >Edit</a>
+<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L242" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 
@@ -236,18 +238,30 @@ Registers given routine definitions as applicates and assigns each applicate to 
   </span><span class="Keyword">let</span><span class="Whitespace"> </span><span class="Identifier">x</span><span class="Whitespace"> </span><span class="Operator">=</span><span class="Whitespace"> </span><span class="StringLit">&quot;abc&quot;</span><span class="Whitespace">
   </span><span class="Identifier">doAssert</span><span class="Whitespace"> </span><span class="Identifier">foo</span><span class="Operator">.</span><span class="Identifier">apply</span><span class="Punctuation">(</span><span class="Punctuation">)</span><span class="Whitespace"> </span><span class="Operator">==</span><span class="Whitespace"> </span><span class="StringLit">&quot;abc&quot;</span></pre>
 &nbsp;&nbsp;<a
-href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L22"
+href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L33"
 class="link-seesrc" target="_blank">Source</a>
-<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L22" class="link-seesrc" target="_blank" >Edit</a>
+<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L33" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+<a id="makeApplicateFromTyped.m,typed"></a>
+<dt><pre><span class="Keyword">macro</span> <a href="#makeApplicateFromTyped.m%2Ctyped"><span class="Identifier">makeApplicateFromTyped</span></a><span class="Other">(</span><span class="Identifier">body</span><span class="Other">:</span> <span class="Identifier">typed</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">untyped</span></pre></dt>
+<dd>
+
+<p>Registers applicate with given routine(s), but forces it to be type checked first (<tt class="docutils literal"><span class="pre">body</span></tt> is only <tt class="docutils literal"><span class="pre">untyped</span></tt> here because a <tt class="docutils literal"><span class="pre">used</span></tt> pragma is injected to get rid of a warning). This lets it use symbols that are accessible during the registering, but if the routine is not a template then <em>only</em> local symbols are accessible.</p>
+<p>Works best for templates and macros, so <tt class="docutils literal"><span class="pre">applicate</span></tt> uses this.</p>
+<p><strong>Note:</strong> This will generate an unused warning for the given routine, <tt class="docutils literal"><span class="pre">makeTypedApplicate</span></tt> automatically generates a <tt class="docutils literal"><span class="pre">used</span></tt> pragma but only on untyped routine expressions. </p>
+
+&nbsp;&nbsp;<a
+href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L70"
+class="link-seesrc" target="_blank">Source</a>
+<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L70" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 <a id="makeTypedApplicate.m,untyped"></a>
 <dt><pre><span class="Keyword">macro</span> <a href="#makeTypedApplicate.m%2Cuntyped"><span class="Identifier">makeTypedApplicate</span></a><span class="Other">(</span><span class="Identifier">body</span><span class="Other">:</span> <span class="Identifier">untyped</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">untyped</span></pre></dt>
 <dd>
 
-<p>Registers applicate with given routine(s), but forces it to be type checked first (<tt class="docutils literal"><span class="pre">body</span></tt> is only <tt class="docutils literal"><span class="pre">untyped</span></tt> here because a <tt class="docutils literal"><span class="pre">used</span></tt> pragma is injected to get rid of a warning). This lets it use symbols that are accessible during the registering, but if the routine is not a template then <em>only</em> local symbols are accessible.</p>
-<p>Works best for templates and macros, so <tt class="docutils literal"><span class="pre">applicate</span></tt> uses this.</p>
-
+Injects <tt class="docutils literal"><span class="pre">used</span></tt> pragma into <tt class="docutils literal"><span class="pre">body</span></tt> and calls <tt class="docutils literal"><span class="pre">makeApplicateFromTyped</span></tt>.
 <p><strong class="examples_text">Example:</strong></p>
 <pre class="listing"><span class="Identifier">makeTypedApplicate</span><span class="Punctuation">:</span><span class="Whitespace">
   </span><span class="Keyword">template</span><span class="Whitespace"> </span><span class="Identifier">useIt</span><span class="Whitespace"> </span><span class="Operator">=</span><span class="Whitespace">
@@ -258,9 +272,9 @@ class="link-seesrc" target="_blank">Source</a>
   </span><span class="Keyword">let</span><span class="Whitespace"> </span><span class="Identifier">it</span><span class="Whitespace"> </span><span class="Operator">=</span><span class="Whitespace"> </span><span class="Identifier">realIt</span><span class="Whitespace">
   </span><span class="Identifier">useIt</span><span class="Operator">.</span><span class="Identifier">apply</span><span class="Punctuation">(</span><span class="Punctuation">)</span></pre>
 &nbsp;&nbsp;<a
-href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L58"
+href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L92"
 class="link-seesrc" target="_blank">Source</a>
-<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L58" class="link-seesrc" target="_blank" >Edit</a>
+<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L92" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 <a id="applicate.m,,"></a>
@@ -293,31 +307,31 @@ class="link-seesrc" target="_blank">Source</a>
       </span><span class="Identifier">double</span><span class="Whitespace"> </span><span class="Identifier">applicate</span><span class="Punctuation">(</span><span class="Identifier">inc</span><span class="Punctuation">(</span><span class="Identifier">c</span><span class="Punctuation">)</span><span class="Punctuation">)</span><span class="Punctuation">)</span><span class="Punctuation">)</span><span class="Whitespace">
 </span><span class="Identifier">doAssert</span><span class="Whitespace"> </span><span class="Identifier">c</span><span class="Whitespace"> </span><span class="Operator">==</span><span class="Whitespace"> </span><span class="DecNumber">8</span></pre>
 &nbsp;&nbsp;<a
-href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L88"
+href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L116"
 class="link-seesrc" target="_blank">Source</a>
-<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L88" class="link-seesrc" target="_blank" >Edit</a>
+<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L116" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 <a id="apply.m,ApplicateArg,varargs[untyped]"></a>
-<dt><pre><span class="Keyword">macro</span> <a href="#apply.m%2CApplicate%2Cvarargs%5Buntyped%5D"><span class="Identifier">apply</span></a><span class="Other">(</span><span class="Identifier">appl</span><span class="Other">:</span> <a href="applicates.html#ApplicateArg"><span class="Identifier">ApplicateArg</span></a><span class="Other">;</span> <span class="Identifier">args</span><span class="Other">:</span> <span class="Identifier">varargs</span><span class="Other">[</span><span class="Identifier">untyped</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">untyped</span></pre></dt>
+<dt><pre><span class="Keyword">macro</span> <a href="#apply.m%2CApplicateArg%2Cvarargs%5Buntyped%5D"><span class="Identifier">apply</span></a><span class="Other">(</span><span class="Identifier">appl</span><span class="Other">:</span> <a href="applicates.html#ApplicateArg"><span class="Identifier">ApplicateArg</span></a><span class="Other">;</span> <span class="Identifier">args</span><span class="Other">:</span> <span class="Identifier">varargs</span><span class="Other">[</span><span class="Identifier">untyped</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">untyped</span></pre></dt>
 <dd>
 
 applies the applicate by injecting the applicate routine (if not in scope already) then calling it with the given arguments
 &nbsp;&nbsp;<a
-href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L218"
+href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L246"
 class="link-seesrc" target="_blank">Source</a>
-<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L218" class="link-seesrc" target="_blank" >Edit</a>
+<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L246" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 <a id="|>.m,untyped,ApplicateArg"></a>
-<dt><pre><span class="Keyword">macro</span> <a href="#%7C%3E.m%2Cuntyped%2CApplicate"><span class="Identifier">`|&gt;`</span></a><span class="Other">(</span><span class="Identifier">arg</span><span class="Other">:</span> <span class="Identifier">untyped</span><span class="Other">;</span> <span class="Identifier">appl</span><span class="Other">:</span> <a href="applicates.html#ApplicateArg"><span class="Identifier">ApplicateArg</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">untyped</span></pre></dt>
+<dt><pre><span class="Keyword">macro</span> <a href="#%7C%3E.m%2Cuntyped%2CApplicateArg"><span class="Identifier">`|&gt;`</span></a><span class="Other">(</span><span class="Identifier">arg</span><span class="Other">:</span> <span class="Identifier">untyped</span><span class="Other">;</span> <span class="Identifier">appl</span><span class="Other">:</span> <a href="applicates.html#ApplicateArg"><span class="Identifier">ApplicateArg</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">untyped</span></pre></dt>
 <dd>
 
 attempted operator syntax for <tt class="docutils literal"><span class="pre">apply</span></tt>. if <tt class="docutils literal"><span class="pre">arg</span></tt> is in parentheses then its arguments are broken up, otherwise it is passed as a single argument
 &nbsp;&nbsp;<a
-href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L237"
+href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L265"
 class="link-seesrc" target="_blank">Source</a>
-<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L237" class="link-seesrc" target="_blank" >Edit</a>
+<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L265" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 
@@ -331,9 +345,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 creates anonymous applicate with no arguments
 &nbsp;&nbsp;<a
-href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L202"
+href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L230"
 class="link-seesrc" target="_blank">Source</a>
-<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L202" class="link-seesrc" target="_blank" >Edit</a>
+<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L230" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 <a id="!=>.t,,"></a>
@@ -342,9 +356,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 infix version of <tt class="docutils literal"><span class="pre">applicate</span></tt>, same syntax
 &nbsp;&nbsp;<a
-href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L206"
+href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L234"
 class="link-seesrc" target="_blank">Source</a>
-<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L206" class="link-seesrc" target="_blank" >Edit</a>
+<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L234" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 <a id="!=>.t"></a>
@@ -353,20 +367,20 @@ class="link-seesrc" target="_blank">Source</a>
 
 anonymous applicate no arguments
 &nbsp;&nbsp;<a
-href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L210"
+href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L238"
 class="link-seesrc" target="_blank">Source</a>
-<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L210" class="link-seesrc" target="_blank" >Edit</a>
+<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L238" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 <a id="().t,ApplicateArg,varargs[untyped]"></a>
-<dt><pre><span class="Keyword">template</span> <a href="#%28%29.t%2CApplicate%2Cvarargs%5Buntyped%5D"><span class="Identifier">`()`</span></a><span class="Other">(</span><span class="Identifier">appl</span><span class="Other">:</span> <a href="applicates.html#ApplicateArg"><span class="Identifier">ApplicateArg</span></a><span class="Other">;</span> <span class="Identifier">args</span><span class="Other">:</span> <span class="Identifier">varargs</span><span class="Other">[</span><span class="Identifier">untyped</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">untyped</span></pre></dt>
+<dt><pre><span class="Keyword">template</span> <a href="#%28%29.t%2CApplicateArg%2Cvarargs%5Buntyped%5D"><span class="Identifier">`()`</span></a><span class="Other">(</span><span class="Identifier">appl</span><span class="Other">:</span> <a href="applicates.html#ApplicateArg"><span class="Identifier">ApplicateArg</span></a><span class="Other">;</span> <span class="Identifier">args</span><span class="Other">:</span> <span class="Identifier">varargs</span><span class="Other">[</span><span class="Identifier">untyped</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">untyped</span></pre></dt>
 <dd>
 
 Call operator alias for <tt class="docutils literal"><span class="pre">apply</span></tt>. Must turn on experimental Nim feature <tt class="docutils literal"><span class="pre">callOperator</span></tt> to use. Note that this experimental feature seems to be very broken. 
 &nbsp;&nbsp;<a
-href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L232"
+href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L260"
 class="link-seesrc" target="_blank">Source</a>
-<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L232" class="link-seesrc" target="_blank" >Edit</a>
+<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L260" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 
@@ -379,7 +393,7 @@ class="link-seesrc" target="_blank">Source</a>
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2020-11-29 18:40:07 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2020-11-30 19:53:01 UTC</small>
       </div>
     </div>
   </div>
