@@ -100,3 +100,15 @@ test "collect and fold":
     map(x !=> x[1][1])
     fold("", x !=> x[0] & x[1])
   check s2 == "11852"
+
+test "yield":
+  iterator foo[T](x: T): auto =
+    iterate iter(x):
+      filter(x !=> x mod 3 == 0)
+      map(x !=> x + 2)
+      use(x !=> (block: yield x))
+  
+  var s: seq[int]
+  for x in foo(-7..11):
+    s.add(x)
+  check s == @[-4, -1, 2, 5, 8, 11]

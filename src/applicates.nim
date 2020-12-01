@@ -229,10 +229,19 @@ macro applicate*(params, body): untyped =
 
 template applicate*(body): untyped =
   ## creates anonymous applicate with no arguments
+  runnableExamples:
+    const defineX = applicate:
+      let x {.inject.} = 3
+    defineX.apply()
+    doAssert x == 3
   applicate((), body)
 
 template `!=>`*(params, body): untyped =
   ## infix version of `applicate`, same syntax
+  runnableExamples:
+    doAssert (x !=> x + 1).apply(2) == 3
+    const foo = (a, b) !=> a + b
+    doAssert foo.apply(1, 2) == 3
   applicate(params, body)
 
 template `!=>`*(body): untyped =
@@ -243,9 +252,34 @@ proc node*(appl: Applicate): NimNode {.compileTime.} =
   ## retrieves the node of the applicate from the cache
   applicateRoutineCache[(when cacheUseTable: string else: int)(appl)]
 
+macro instantiateAs*(appl: ApplicateArg, name: untyped): untyped =
+  ## instantiates the applicate in the scope with the given name
+  ## 
+  ## helps where `apply` syntax isn't enough (for example generics
+  ## and overloading)
+  runnableExamples:
+    instantiateAs(x !=> x + 1, incr)
+    doAssert incr(1) == 2
+    proc foo[T](x, y: T): T {.makeApplicate.} = x + y
+    proc bar(x, y: string): string {.makeApplicate.} = x & y
+    instantiateAs(foo, baz)
+    instantiateAs(bar, baz)
+    doAssert baz(1.0, 2.0) == 3.0
+    doAssert baz[uint8](1, 2) == 3u8
+    doAssert baz("a", "b") == "ab"
+  result = copy appl.node
+  result[0] =
+    if name.kind == nnkPrefix and name[0].eqIdent"*":
+      postfix(name[1], "*")
+    else:
+      name
+
 macro apply*(appl: ApplicateArg, args: varargs[untyped]): untyped =
   ## applies the applicate by injecting the applicate routine
   ## (if not in scope already) then calling it with the given arguments
+  runnableExamples:
+    const incr = x !=> x + 1
+    doAssert incr.apply(1) == 2
   let a = appl.node
   let templName = ident repr a[0]
   let aCall = newCall(templName)
@@ -265,8 +299,43 @@ when defined(nimHasCallOperator) or defined(nimdoc):
 macro `|>`*(arg: untyped, appl: ApplicateArg): untyped =
   ## attempted operator syntax for `apply`. if `arg` is in parentheses
   ## then its arguments are broken up, otherwise it is passed as a single argument
+  runnableExamples:
+    doAssert 1 |> (x !=> x + 1) == 2
+    const foo = x !=> x + 1
+    doAssert 1 |> foo == 2
+    doAssert (1, 2) |> ((a, b) !=> a + b) == 3
   var args = newNimNode(nnkArgList)
   if arg.kind in {nnkPar, nnkTupleConstr}:
     for a in arg: args.add(a)
   else: args.add(arg)
   result = getAst apply(appl, args)
+
+macro `\`*(call: untyped): untyped =
+  ## converts a call expression to an applicate call expression
+  ## 
+  ## supports dot calls, if the given expression is not a dot expression
+  ## or call or command then it will simply apply it with no arguments
+  ## 
+  ## also supports command calls but not sure how you'd use it with the syntax
+  runnableExamples:
+    const foo = x !=> x + 1
+    doAssert \foo(1) == 2
+    doAssert \1.foo == 2
+    const bar = (a, b) !=> a + b
+    doAssert \bar(1, 2) == 3
+    doAssert \1.bar(2) == 3
+    const baz = !=> 10
+    doAssert \baz() == 10
+    doAssert \baz == 10
+  case call.kind
+  of nnkDotExpr:
+    result = newCall(bindSym"apply", call[1], call[0])
+  of nnkCall, nnkCommand:
+    result = if call[0].kind == nnkDotExpr:
+      newCall(bindSym"apply", call[0][1], call[0][0])
+    else:
+      newCall(bindSym"apply", call[0])
+    for i in 1..<call.len:
+      result.add(call[i])
+  else:
+    result = newCall(bindSym"apply", call)
