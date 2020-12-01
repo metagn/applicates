@@ -73,9 +73,9 @@ import options
 test "option unwrap":
   proc unwrap[T](o: Option[T], someCb, noneCb: static Applicate): auto =
     if o.isSome:
-      someCb.apply(o.unsafeGet)
+      \someCb(o.unsafeGet)
     else:
-      noneCb.apply()
+      \noneCb
 
   let a = some(3)
   let b = none(string)
