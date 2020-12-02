@@ -43,7 +43,7 @@ macro makeApplicate*(body): untyped =
       doAssert foo.apply() == "abc"
   case body.kind
   of nnkStmtList:
-    result = newStmtList()
+    result = newNimNode(nnkStmtList, body)
     for st in body: result.add(getAst(makeApplicate(st)))
   of RoutineNodes - {nnkDo, nnkLambda}:
     let num = len(applicateRoutineCache)
@@ -82,7 +82,7 @@ macro makeApplicateFromTyped*(body: typed): untyped =
   ## 
   case body.kind
   of nnkStmtList:
-    result = newStmtList()
+    result = newNimNode(nnkStmtList, body)
     for st in body: result.add(getAst(makeApplicateFromTyped(st)))
   of RoutineNodes - {nnkDo, nnkLambda}:
     result = getAst(makeApplicate(body))
@@ -102,7 +102,7 @@ macro makeTypedApplicate*(body: untyped): untyped =
       useIt.apply()
   case body.kind
   of nnkStmtList:
-    result = newStmtList()
+    result = newNimNode(nnkStmtList, body)
     for st in body: result.add(getAst(makeTypedApplicate(st)))
   of RoutineNodes - {nnkDo, nnkLambda}:
     if body[4].kind == nnkEmpty:
@@ -169,7 +169,7 @@ macro applicate*(params, body): untyped =
     params = params[1]
     val
   elif params.kind in {nnkCall, nnkObjConstr}:
-    let newParams = newNimNode(nnkPar)
+    let newParams = newNimNode(nnkPar, params)
     for pi in 1..<params.len:
       newParams.add(params[pi])
     let val = params[0]
@@ -181,7 +181,9 @@ macro applicate*(params, body): untyped =
   else:
     nil
   if params.kind != nnkPar:
-    params = newPar(params)
+    let oldParams = params
+    params = newNimNode(nnkPar, oldParams)
+    params.add(oldParams)
   let formalParams = newTree(nnkFormalParams, returnType)
   var lastIdents = 0
   for p in params:
@@ -203,7 +205,8 @@ macro applicate*(params, body): untyped =
       else:
         error("unrecognized param kind: " & $params.kind, params)
         newIdentDefs(ident"_", newEmptyNode())
-  let templ = newTree(nnkTemplateDef,
+  let templ = newNimNode(nnkTemplateDef, body)
+  templ.add(
     # should be ident here, otherwise declared breaks
     name,
     newEmptyNode(), newEmptyNode(),
@@ -242,13 +245,25 @@ template `!=>`*(body): untyped =
   ## anonymous applicate no arguments
   applicate(body)
 
+template `\=>`*(params, body): untyped =
+  ## infix version of `applicate`, same syntax
+  runnableExamples:
+    doAssert (x !=> x + 1).apply(2) == 3
+    const foo = (a, b) !=> a + b
+    doAssert foo.apply(1, 2) == 3
+  applicate(params, body)
+
+template `\=>`*(body): untyped =
+  ## anonymous applicate no arguments
+  applicate(body)
+
 macro toUntyped*(sym: untyped, arity: static int): Applicate =
   ## creates an applicate with `n` = `arity` untyped parameters
   ## that calls the given symbol `sym`
   runnableExamples:
     const adder = toUntyped(`+`, 2)
     doAssert adder.apply(1, 2) == 3
-  var params = newTree(nnkPar)
+  var params = newNimNode(nnkPar)
   var call = newCall(sym)
   for i in 1..arity:
     let temp = genSym(nskParam, "temp" & $i)
@@ -332,7 +347,8 @@ macro apply*(appl: ApplicateArg, args: varargs[untyped]): untyped =
     doAssert incr.apply(1) == 2
   let a = appl.node
   let templName = ident repr a[0]
-  let aCall = newCall(templName)
+  let aCall = newNimNode(nnkCall)
+  aCall.add(templName)
   for arg in args:
     aCall.add(arg)
   result = quote do:
@@ -359,7 +375,7 @@ macro `|>`*(arg: untyped, appl: ApplicateArg): untyped =
     const foo = x !=> x + 1
     doAssert 1 |> foo == 2
     doAssert (1, 2) |> ((a, b) !=> a + b) == 3
-  var args = newNimNode(nnkArgList)
+  var args = newNimNode(nnkArgList, arg)
   if arg.kind in {nnkPar, nnkTupleConstr}:
     for a in arg: args.add(a)
   else: args.add(arg)
@@ -382,15 +398,17 @@ macro `\`*(call: untyped): untyped =
     const baz = !=> 10
     doAssert \baz() == 10
     doAssert \baz == 10
+  result = newNimNode(nnkCall, call)
+  result.add(bindSym"apply")
   case call.kind
   of nnkDotExpr:
-    result = newCall(bindSym"apply", call[1], call[0])
+    result.add(call[1], call[0])
   of nnkCall, nnkCommand:
-    result = if call[0].kind == nnkDotExpr:
-      newCall(bindSym"apply", call[0][1], call[0][0])
+    if call[0].kind == nnkDotExpr:
+      result.add(call[0][1], call[0][0])
     else:
-      newCall(bindSym"apply", call[0])
+      result.add(call[0])
     for i in 1..<call.len:
       result.add(call[i])
   else:
-    result = newCall(bindSym"apply", call)
+    result.add(call)
