@@ -154,9 +154,6 @@ macro applicate*(params, body): untyped =
   if params.kind == nnkPragmaExpr:
     pragma = params[1]
     params = params[0]
-  elif params.kind == nnkPragma:
-    pragma = params
-    params = newNimNode(nnkPar)
   if params.kind == nnkExprColonExpr and params[0].kind == nnkPar:
     returnType = params[1]
     params = params[0]
@@ -167,9 +164,6 @@ macro applicate*(params, body): untyped =
   if params.kind == nnkPragmaExpr:
     pragma = params[1]
     params = params[0]
-  elif params.kind == nnkPragma:
-    pragma = params
-    params = newNimNode(nnkPar)
   let name = if params.kind == nnkInfix and params[0].eqIdent"*":
     let val = postfix(params[0], "*")
     params = params[1]
@@ -198,7 +192,7 @@ macro applicate*(params, body): untyped =
           formalParams[i][1] = p[1]
         lastIdents = 0
         newIdentDefs(p[0], p[1])
-      of nnkIdent:
+      of nnkIdent, nnkSym, nnkClosedSymChoice, nnkOpenSymChoice:
         inc lastIdents
         newIdentDefs(p, newEmptyNode())
       elif p.kind == nnkInfix and p[0].eqIdent"is":
@@ -248,6 +242,62 @@ template `!=>`*(body): untyped =
   ## anonymous applicate no arguments
   applicate(body)
 
+macro toUntyped*(sym: untyped, arity: static int): Applicate =
+  ## creates an applicate with `n` = `arity` untyped parameters
+  ## that calls the given symbol `sym`
+  runnableExamples:
+    const adder = toUntyped(`+`, 2)
+    doAssert adder.apply(1, 2) == 3
+  var params = newTree(nnkPar)
+  var call = newCall(sym)
+  for i in 1..arity:
+    let temp = genSym(nskParam, "temp" & $i)
+    params.add(temp)
+    call.add(temp)
+  result = getAst(applicate(params, call))
+
+macro toUntyped*(sym: typed{sym}): Applicate =
+  ## infers the arity of `sym` from its symbol then calls `toUntyped(sym, arity)`
+  runnableExamples:
+    const newstr = toUntyped(newString)
+    var s: string
+    s.setLen(4)
+    doAssert newstr.apply(4) == s
+  let impl = sym.getImpl
+  if impl.isNil:
+    error("implementation of symbol " & sym.repr & " for toUntyped was nil", sym)
+  let fparams = impl[3]
+  var arity = 0
+  for i in 1..<fparams.len:
+    arity += fparams[i].len - 2
+  result = getAst(toUntyped(sym, arity))
+
+macro toUntyped*(sym: typed{nkClosedSymChoice}): Applicate =
+  ## infers the arity of a closed symbol choice `sym` from its choices
+  ## then calls `toUntyped(sym, arity)`. if the symbol choices do not share an arity,
+  ## it will give an error
+  runnableExamples:
+    const leq = toUntyped(`<=`)
+    doAssert leq.apply(1, 2)
+    doAssert leq.apply(2.0, 2.0)
+  var commonArity = 0
+  for i in 0..<sym.len:
+    let s = sym[i]
+    let impl = s.getImpl
+    if impl.isNil:
+      # maybe ignore these?
+      error("implementation of symbol choice " & s.repr & " for toUntyped was nil", sym)
+    let fparams = impl[3]
+    var arity = 0
+    for i in 1..<fparams.len:
+      arity += fparams[i].len - 2
+    if i == 0:
+      commonArity = arity
+    elif commonArity != arity:
+      error("conflicting arities for symbol " & sym.repr & ": " &
+        $commonArity & " and " & $arity, s)
+  result = getAst(toUntyped(sym, commonArity))
+
 proc node*(appl: Applicate): NimNode {.compileTime.} =
   ## retrieves the node of the applicate from the cache
   applicateRoutineCache[(when cacheUseTable: string else: int)(appl)]
@@ -290,11 +340,14 @@ macro apply*(appl: ApplicateArg, args: varargs[untyped]): untyped =
       `a`
     `aCall`
 
-when defined(nimHasCallOperator) or defined(nimdoc):
-  template `()`*(appl: ApplicateArg, args: varargs[untyped]): untyped =
-    ## Call operator alias for `apply`. Must turn on experimental Nim feature
-    ## `callOperator` to use. Note that this experimental feature seems to be very broken. 
-    appl.apply(args)
+template `()`*(appl: ApplicateArg, args: varargs[untyped]): untyped =
+  ## Call operator alias for `apply`. Must turn on experimental Nim feature
+  ## `callOperator` to use. Note that this experimental feature seems to be
+  ## fairly broken. This definition might also go away if Nim starts to error
+  ## on templates named to overload experimental operators (which it currently
+  ## doesn't inconsistently with other routines), as a `compiles` check does
+  ## not work with the `experimental` pragma in other modules.
+  appl.apply(args)
 
 macro `|>`*(arg: untyped, appl: ApplicateArg): untyped =
   ## attempted operator syntax for `apply`. if `arg` is in parentheses
