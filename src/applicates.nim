@@ -299,6 +299,8 @@ when defined(nimHasCallOperator) or defined(nimdoc):
 macro `|>`*(arg: untyped, appl: ApplicateArg): untyped =
   ## attempted operator syntax for `apply`. if `arg` is in parentheses
   ## then its arguments are broken up, otherwise it is passed as a single argument
+  ## 
+  ## note that you can undefine operators you don't want via ``import except``
   runnableExamples:
     doAssert 1 |> (x !=> x + 1) == 2
     const foo = x !=> x + 1
