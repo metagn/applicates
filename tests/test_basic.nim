@@ -1,11 +1,12 @@
-import unittest, applicates
+import unittest, applicates, strutils
 
-test "syntax":
+test "applicate macro and apply":
   applicate double(x: SomeNumber) -> typeof(x):
     x * 2
   
   check double.apply(3) == 6
 
+test "makeapplicate":
   proc foo: auto {.makeApplicate.} = x
   block:
     let x = 5
@@ -13,9 +14,6 @@ test "syntax":
   block:
     let x = "abc"
     check foo.apply() == "abc"
-  
-  check "abc" |> (x !=> x[^1]) == 'c'
-  check (a, 3) |> ((name, value) !=> (let name = value; name)) == 3
 
   makeTypedApplicate:
     template useIt =
@@ -25,6 +23,20 @@ test "syntax":
   block:
     let it = realIt
     useIt.apply()
+  
+  const incr = makeTypedApplicate do (x: int) -> int: x + 1
+  doAssert incr.apply(5) == 6
+  const capitalize = makeTypedApplicate proc(x: string): string =
+    result = x
+    result[0] = toUpperAscii result[0]
+  doAssert capitalize.apply("hello") == "Hello"
+  const joiner = makeTypedApplicate do (x: openarray[string], s: string = ", ") -> string:
+    result = strutils.join(x, s)
+  doAssert joiner.apply(["a", "b", "c"], ".") == "a.b.c"
+  
+test "operators":
+  check "abc" |> (x !=> x[^1]) == 'c'
+  check \((name, value) \=> (let name = value; name))(a, 3) == 3
 
 test "map test":
   proc map[T](s: seq[T], f: ApplicateArg): seq[T] =
@@ -36,54 +48,16 @@ test "map test":
   applicate double(x): x * 2
   check @[1, 2, 3, 4, 5].map(double) == @[2, 4, 6, 8, 10]
 
-test "applying":
-  template iterCollectSeq(iter: untyped): untyped =
-    var s: seq[typeof(iter, typeOfIter)]
-    for x in iter:
-      s.add(x)
-    s
-  
-  iterator map[T](s: seq[T], f: ApplicateArg): auto =
+  iterator map[T](s: T, f: ApplicateArg): auto =
     for x in s:
       yield f.apply(x)
-
-  check iterCollectSeq(@[1, 2, 3, 4, 5].map(x !=> x * 2)) == @[2, 4, 6, 8, 10]
-
-  iterator filter[T](s: seq[T], f: ApplicateArg): auto =
-    for x in s:
-      if x |> f:
-        yield x
   
-  check iterCollectSeq(@[1, 2, 3, 4, 5].filter(x !=> bool(x and 1))) == @[1, 3, 5]
+  var s: seq[float]
+  for y in @[1, 2, 3, 4, 5].map(x \=> x / 7):
+    s.add(y)
+  check s == @[1/7, 2/7, 3/7, 4/7, 5/7]
 
-test "cfor":
-  iterator cfor(a, b, c: static Applicate): tuple[] =
-    apply a
-    while apply b:
-      yield ()
-      apply c
-
-  var i = 0
-  for x in cfor(() {.dirty.} !=> (var i = 0;), !=> (i < 5), !=> (inc i)):
-    inc i
-  check i == 5
-
-import options
-
-test "option unwrap":
-  proc unwrap[T](o: Option[T], someCb, noneCb: static Applicate): auto =
-    if o.isSome:
-      \someCb(o.unsafeGet)
-    else:
-      \noneCb
-
-  let a = some(3)
-  let b = none(string)
-
-  check a.unwrap(
-    (n: int) !=> (check(n == 3); true),
-    !=> false)
-
-  check b.unwrap(
-    _ !=> false,
-    !=> true)
+test "toUntyped":
+  const adder = toUntyped(`+`, 2)
+  const toString = toUntyped(`$`)
+  check (2, 3) |> adder |> toString == "5"
