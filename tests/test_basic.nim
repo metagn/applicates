@@ -35,7 +35,7 @@ test "makeapplicate":
   doAssert joiner.apply(["a", "b", "c"], ".") == "a.b.c"
   
 test "operators":
-  check "abc" |> (x !=> x[^1]) == 'c'
+  check (x !=> x[^1]) | "abc" == 'c'
   check \((name, value) \=> (let name = value; name))(a, 3) == 3
 
 test "map test":
@@ -60,4 +60,4 @@ test "map test":
 test "toUntyped":
   const adder = toUntyped(`+`, 2)
   const toString = toUntyped(`$`)
-  check (2, 3) |> adder |> toString == "5"
+  check (2, 3) |< adder |< toString == "5"

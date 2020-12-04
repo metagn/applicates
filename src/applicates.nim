@@ -330,6 +330,18 @@ proc node*(appl: Applicate): NimNode {.compileTime.} =
   ## retrieves the node of the applicate from the cache
   applicateRoutineCache[(when cacheUseTable: string else: int)(appl)]
 
+macro arity*(appl: ApplicateArg): static int =
+  ## gets arity of applicate
+  runnableExamples:
+    doAssert arity((x, y) !=> x + y) == 2
+    doAssert arity(a !=> a) == 1
+    doAssert arity(!=> 3) == 0
+  let fparams = appl.node[3]
+  var res = 0
+  for i in 1..<fparams.len:
+    res += fparams[i].len - 2
+  result = newLit(res)
+
 macro instantiateAs*(appl: ApplicateArg, name: untyped): untyped =
   ## instantiates the applicate in the scope with the given name
   ## 
@@ -376,23 +388,32 @@ template `()`*(appl: ApplicateArg, args: varargs[untyped]): untyped =
   ## on templates named to overload experimental operators (which it currently
   ## doesn't inconsistently with other routines), as a `compiles` check does
   ## not work with the `experimental` pragma in other modules.
+  ## 
+  ## It's hard to conditionally define routines based on experimental features.
+  ## Nim currently does not error with experimental operator overloads if they
+  ## are templates, so this specific routine works. However if you run into
+  ## problems with the call operator, `import except` should do the trick.
   appl.apply(args)
 
-macro `|>`*(arg: untyped, appl: ApplicateArg): untyped =
+macro `|`*(appl: ApplicateArg, arg: untyped): untyped =
   ## attempted operator syntax for `apply`. if `arg` is in parentheses
   ## then its arguments are broken up, otherwise it is passed as a single argument
   ## 
   ## note that you can undefine operators you don't want via ``import except``
   runnableExamples:
-    doAssert 1 |> (x !=> x + 1) == 2
+    doAssert (x !=> x + 1) | 1 == 2
     const foo = x !=> x + 1
-    doAssert 1 |> foo == 2
-    doAssert (1, 2) |> ((a, b) !=> a + b) == 3
+    doAssert foo | 1 == 2
+    doAssert ((a, b) !=> a + b) | (1, 2) == 3
   var args = newNimNode(nnkArgList, arg)
   if arg.kind in {nnkPar, nnkTupleConstr}:
     for a in arg: args.add(a)
   else: args.add(arg)
   result = getAst apply(appl, args)
+
+template `|<`*(arg: untyped, appl: ApplicateArg): untyped =
+  ## flipped `|`
+  appl | arg
 
 macro `\`*(call: untyped): untyped =
   ## converts a call expression to an applicate call expression
