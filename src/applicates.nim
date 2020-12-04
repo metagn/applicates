@@ -232,14 +232,29 @@ macro applicate*(params, body): untyped =
   else:
     result = getAst(makeTypedApplicate(templ))
 
-template applicate*(body): untyped =
-  ## creates anonymous applicate with no arguments
+macro applicate*(body): untyped =
+  ## syntax for applicates with no parameters, or for applicates made with
+  ## `do` notation
   runnableExamples:
     const defineX = applicate:
       let x {.inject.} = 3
     defineX.apply()
     doAssert x == 3
-  applicate((), body)
+    
+    # this is how do notation works, which we unfortunately can't show
+    # as an example because runnableexamples breaks do notation:
+    
+    # const incr = applicate do (x: int) -> int: x + 1
+    # doAssert incr.apply(x) == 4
+  if body.kind == nnkDo:
+    if body[3][0].kind == nnkEmpty: body[3][0] = ident"untyped"
+    let templ = newNimNode(nnkTemplateDef, body)
+    for s in body:
+      templ.add(s)
+    result = getAst(makeTypedApplicate(templ))
+  else:
+    let args = newPar()
+    result = getAst(applicate(args, body))
 
 template `!=>`*(params, body): untyped =
   ## infix version of `applicate`, same syntax

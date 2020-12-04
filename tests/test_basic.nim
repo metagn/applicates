@@ -1,11 +1,5 @@
 import unittest, applicates, strutils
 
-test "applicate macro and apply":
-  applicate double(x: SomeNumber) -> typeof(x):
-    x * 2
-  
-  check double.apply(3) == 6
-
 test "makeapplicate":
   proc foo: auto {.makeApplicate.} = x
   block:
@@ -33,6 +27,21 @@ test "makeapplicate":
   const joiner = makeTypedApplicate do (x: openarray[string], s: string = ", ") -> string:
     result = strutils.join(x, s)
   doAssert joiner.apply(["a", "b", "c"], ".") == "a.b.c"
+
+test "applicate macro and apply":
+  applicate double(x: SomeNumber) -> typeof(x):
+    x * 2
+  
+  check double.apply(3) == 6
+
+  const foo = applicate do (num: int, name):
+    type `name` = object
+      field: int
+    var x {.inject.}: `name`
+    x.field = num
+  
+  foo.apply(5, FooType)
+  check x.field == 5
   
 test "operators":
   check (x !=> x[^1]) | "abc" == 'c'
