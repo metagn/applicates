@@ -11,9 +11,10 @@ proc map[T](s: seq[T], f: ApplicateArg): seq[T] =
     result[i] =
       f.apply(s[i]) # maybe a little long
       # or
-      s[i] |> f # noisy, also you need to do tuples like ((1, 2)) |> f as (1, 2) |> f becomes f.apply(1, 2)
-      # or, if --experimental:callOperator is turned on (undocumented, maybe broken feature though a test for it works)
-      f(s[i])
+      f | s[i]
+      s[i] |< f # noisy, also you need to do tuples like ((1, 2)) |< f as (1, 2) |< f becomes f.apply(1, 2)
+      # or
+      f(s[i]) # uses experimental callOperator feature, if it breaks your code use `import except`
 
 doAssert @[1, 2, 3, 4, 5].map(applicate(x) do: x - 1) == @[0, 1, 2, 3, 4]
 # alternate syntax (doesnt look great but i cant think of anything better):

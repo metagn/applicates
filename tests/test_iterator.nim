@@ -27,13 +27,13 @@ test "filter map use":
   (
     (
       (
-        (-7..11) |> iter,
+        (-7..11) |< iter,
         x \=> x mod 3 == 0
-      ) |> filter,
+      ) |< filter,
       x \=> x + 2
-    ) |> map,
+    ) |< map,
     x \=> s2.add(x)
-  ) |> use
+  ) |< use
   check s2 == s
 
 import macros
