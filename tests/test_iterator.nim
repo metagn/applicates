@@ -39,7 +39,7 @@ test "filter map use":
 import macros
 
 macro iterate(init, st): untyped =
-  result = init
+  result = newCall(bindSym"iter", init)
   for s in st:
     if s.kind == nnkIdent:
       result = newCall(bindSym"apply", s, result)
@@ -50,7 +50,7 @@ macro iterate(init, st): untyped =
 
 test "iterate":
   var s: seq[int]
-  iterate iter(-7..11):
+  iterate -7..11:
     filter(x \=> x mod 3 == 0)
     map(x \=> x + 2)
     filter(x \=> x > 0)
@@ -81,7 +81,7 @@ applicate enumerate(iter: static Applicate):
 from algorithm import reversed
 
 test "collect and fold":
-  let s = iterate iter(-7..11):
+  let s = iterate -7..11:
     filter(x \=> x mod 3 == 0)
     map(x \=> x + 2)
     enumerate
@@ -96,14 +96,14 @@ test "collect and fold":
     iter.apply(x \=> (a = op.apply((a, x))))
     a
 
-  let s2 = iterate iter(reversed(s)):
+  let s2 = iterate reversed(s):
     map(x \=> x[1][1])
     fold("", x \=> x[0] & x[1])
   check s2 == "11852"
 
 test "yield":
   iterator foo[T](x: T): auto =
-    iterate iter(x):
+    iterate x:
       filter(x \=> x mod 3 == 0)
       map(x \=> x + 2)
       use:

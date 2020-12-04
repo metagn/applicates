@@ -1,14 +1,14 @@
 import macros
 
 const cacheUseTable = defined(applicatesCacheUseTable) and not defined(nimdoc)
+const useCache = defined(applicatesUseMacroCache) and not defined(nimdoc)
 
 when cacheUseTable:
   type Applicate* = distinct string
 else:
-  type
-    Applicate* = distinct int
-      ## "pointer to" (index of) applicate AST. if you define
-      ## ``applicatesCacheUseTable`` this will be a distinct string
+  type Applicate* = distinct int
+    ## "pointer to" (index of) applicate AST. if you define
+    ## ``applicatesCacheUseTable`` this will be a distinct string
 
 type ApplicateArg* = static Applicate
   ## `static Applicate` to use for types of arguments
@@ -16,9 +16,11 @@ type ApplicateArg* = static Applicate
 when cacheUseTable:
   import macrocache
   const applicateRoutineCache* = CacheTable "applicates.routines.table"
-elif defined(applicatesUseMacroCache) or defined(nimdoc):
+elif useCache:
   import macrocache
   const applicateRoutineCache* = CacheSeq "applicates.routines"
+else:
+  var applicateRoutineCache* {.compileTime.}: seq[NimNode]
     ## the cache containing the routine definition nodes of
     ## each applicate. can be indexed by the ID of an applicate to receive
     ## its routine node, which is meant to be put in user code and invoked
@@ -27,8 +29,6 @@ elif defined(applicatesUseMacroCache) or defined(nimdoc):
     ## then it will use Nim's `macrocache` types, if you define
     ## `applicatesCacheUseTable` then it will use a `CacheTable` with
     ## unique strings
-else:
-  var applicateRoutineCache* {.compileTime.}: seq[NimNode]
 
 macro makeApplicate*(body): untyped =
   ## Registers given routine definitions as applicates and
@@ -45,13 +45,21 @@ macro makeApplicate*(body): untyped =
   of nnkStmtList:
     result = newNimNode(nnkStmtList, body)
     for st in body: result.add(getAst(makeApplicate(st)))
-  of RoutineNodes - {nnkDo, nnkLambda}:
+  of RoutineNodes:
     let num = len(applicateRoutineCache)
     let key = when cacheUseTable: $num else: num
-    result = newConstStmt(ident repr body[0], newCall(bindSym"Applicate", newLit(key)))
-    let body = copy(body)
-    body[0] = ident repr gensym(
-      case body.kind
+    result = newCall(bindSym"Applicate", newLit(key))
+    if body[0].kind != nnkEmpty:
+      result = newConstStmt(ident repr body[0], result)
+    let b = newNimNode(
+      if body.kind in {nnkDo, nnkLambda}:
+        nnkProcDef
+      else:
+        body.kind, body)
+    for n in body:
+      b.add(n)
+    b[0] = ident repr gensym(
+      case b.kind
       of nnkTemplateDef: nskTemplate
       of nnkMacroDef: nskMacro
       of nnkProcDef: nskProc
@@ -61,18 +69,17 @@ macro makeApplicate*(body): untyped =
       of nnkFuncDef: nskFunc
       else: nskTemplate, "appl" & $num)
     when cacheUseTable:
-      applicateRoutineCache[key] = body
+      applicateRoutineCache[key] = b
     else:
-      add(applicateRoutineCache, body)
+      add(applicateRoutineCache, b)
   else:
-    error("cannot turn non-routine into applicate", body)
+    error("cannot turn non-routine into applicate, given kind " & $body.kind, body)
 
 macro makeApplicateFromTyped*(body: typed): untyped =
   ## Registers applicate with given routine(s), but forces it to be type
-  ## checked first (`body` is only `untyped` here because a `used` pragma
-  ## is injected to get rid of a warning). This lets it use symbols that are
-  ## accessible during the registering, but if the routine is not a template
-  ## then *only* local symbols are accessible.
+  ## checked first. This lets it use symbols that are accessible during the
+  ## registering, but if the routine is not a template then *only* local
+  ## symbols are accessible.
   ## 
   ## Works best for templates and macros, so `applicate` uses this.
   ## 
@@ -84,10 +91,10 @@ macro makeApplicateFromTyped*(body: typed): untyped =
   of nnkStmtList:
     result = newNimNode(nnkStmtList, body)
     for st in body: result.add(getAst(makeApplicateFromTyped(st)))
-  of RoutineNodes - {nnkDo, nnkLambda}:
+  of RoutineNodes:
     result = getAst(makeApplicate(body))
   else:
-    error("cannot turn non-routine into applicate", body)
+    error("cannot turn non-routine into applicate, given kind " & $body.kind, body)
 
 macro makeTypedApplicate*(body: untyped): untyped =
   ## Injects `used` pragma into `body` and calls `makeApplicateFromTyped`.
@@ -104,14 +111,15 @@ macro makeTypedApplicate*(body: untyped): untyped =
   of nnkStmtList:
     result = newNimNode(nnkStmtList, body)
     for st in body: result.add(getAst(makeTypedApplicate(st)))
-  of RoutineNodes - {nnkDo, nnkLambda}:
-    if body[4].kind == nnkEmpty:
-      body[4] = newTree(nnkPragma, ident"used")
-    else:
-      body[4].add(ident"used")
+  of RoutineNodes:
+    if body[0].kind != nnkEmpty:
+      if body[4].kind == nnkEmpty:
+        body[4] = newTree(nnkPragma, ident"used")
+      else:
+        body[4].add(ident"used")
     result = getAst(makeApplicateFromTyped(body))
   else:
-    error("cannot turn non-routine into applicate", body)
+    error("cannot turn non-routine into applicate, given kind " & $body.kind, body)
 
 macro applicate*(params, body): untyped =
   ## generates a template based on the params and body and registers it as a typed
@@ -248,8 +256,8 @@ template `!=>`*(body): untyped =
 template `\=>`*(params, body): untyped =
   ## infix version of `applicate`, same syntax
   runnableExamples:
-    doAssert (x !=> x + 1).apply(2) == 3
-    const foo = (a, b) !=> a + b
+    doAssert (x \=> x + 1).apply(2) == 3
+    const foo = (a, b) \=> a + b
     doAssert foo.apply(1, 2) == 3
   applicate(params, body)
 
@@ -271,47 +279,52 @@ macro toUntyped*(sym: untyped, arity: static int): Applicate =
     call.add(temp)
   result = getAst(applicate(params, call))
 
-macro toUntyped*(sym: typed{sym}): Applicate =
+macro toUntyped*(sym: typed): Applicate =
   ## infers the arity of `sym` from its symbol then calls `toUntyped(sym, arity)`
+  ## 
+  ## if `sym` is a symbol choice, then the common arity of the choices is used.
+  ## if the symbol choices do not share an arity, it will give an error
   runnableExamples:
     const newstr = toUntyped(newString)
     var s: string
     s.setLen(4)
     doAssert newstr.apply(4) == s
-  let impl = sym.getImpl
-  if impl.isNil:
-    error("implementation of symbol " & sym.repr & " for toUntyped was nil", sym)
-  let fparams = impl[3]
-  var arity = 0
-  for i in 1..<fparams.len:
-    arity += fparams[i].len - 2
-  result = getAst(toUntyped(sym, arity))
 
-macro toUntyped*(sym: typed{nkClosedSymChoice}): Applicate =
-  ## infers the arity of a closed symbol choice `sym` from its choices
-  ## then calls `toUntyped(sym, arity)`. if the symbol choices do not share an arity,
-  ## it will give an error
-  runnableExamples:
     const leq = toUntyped(`<=`)
     doAssert leq.apply(1, 2)
     doAssert leq.apply(2.0, 2.0)
-  var commonArity = 0
-  for i in 0..<sym.len:
-    let s = sym[i]
-    let impl = s.getImpl
+  case sym.kind
+  of nnkSym:
+    let impl = sym.getImpl
     if impl.isNil:
-      # maybe ignore these?
-      error("implementation of symbol choice " & s.repr & " for toUntyped was nil", sym)
+      error("implementation of symbol " & sym.repr & " for toUntyped was nil", sym)
     let fparams = impl[3]
     var arity = 0
     for i in 1..<fparams.len:
       arity += fparams[i].len - 2
-    if i == 0:
-      commonArity = arity
-    elif commonArity != arity:
-      error("conflicting arities for symbol " & sym.repr & ": " &
-        $commonArity & " and " & $arity, s)
-  result = getAst(toUntyped(sym, commonArity))
+    let identSym = ident repr sym
+    result = getAst(toUntyped(identSym, arity))
+  of nnkClosedSymChoice, nnkOpenSymChoice:
+    var commonArity = 0
+    for i in 0..<sym.len:
+      let s = sym[i]
+      let impl = s.getImpl
+      if impl.isNil:
+        # maybe ignore these?
+        error("implementation of symbol choice " & s.repr & " for toUntyped was nil", sym)
+      let fparams = impl[3]
+      var arity = 0
+      for i in 1..<fparams.len:
+        arity += fparams[i].len - 2
+      if i == 0:
+        commonArity = arity
+      elif commonArity != arity:
+        error("conflicting arities for symbol " & sym.repr & ": " &
+          $commonArity & " and " & $arity, s)
+    let identSym = ident repr sym
+    result = getAst(toUntyped(identSym, commonArity))
+  else:
+    error("non-symbol was passed to unary toUntyped, with kind " & $sym.kind, sym) 
 
 proc node*(appl: Applicate): NimNode {.compileTime.} =
   ## retrieves the node of the applicate from the cache
@@ -347,7 +360,7 @@ macro apply*(appl: ApplicateArg, args: varargs[untyped]): untyped =
     doAssert incr.apply(1) == 2
   let a = appl.node
   let templName = ident repr a[0]
-  let aCall = newNimNode(nnkCall)
+  let aCall = newNimNode(nnkCall, args)
   aCall.add(templName)
   for arg in args:
     aCall.add(arg)
