@@ -143,6 +143,8 @@ function main() {
     title="instantiateAs(appl: ApplicateArg; name: untyped): untyped"><wbr />instantiate<wbr />As<span class="attachedType">ApplicateArg</span></a></li>
   <li><a class="reference" href="#apply.m%2CApplicateArg%2Cvarargs%5Buntyped%5D"
     title="apply(appl: ApplicateArg; args: varargs[untyped]): untyped"><wbr />apply<span class="attachedType">ApplicateArg</span></a></li>
+  <li><a class="reference" href="#forceApply.m%2CApplicateArg%2Cvarargs%5Buntyped%5D"
+    title="forceApply(appl: ApplicateArg; args: varargs[untyped]): untyped"><wbr />force<wbr />Apply<span class="attachedType">ApplicateArg</span></a></li>
   <li><a class="reference" href="#%7C.m%2CApplicateArg%2Cuntyped"
     title="`|`(appl: ApplicateArg; arg: untyped): untyped"><wbr />`|`<span class="attachedType">ApplicateArg</span></a></li>
   <li><a class="reference" href="#%5C.m%2Cuntyped"
@@ -438,6 +440,19 @@ class="link-seesrc" target="_blank">Source</a>
 <a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L382" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
+<a id="forceApply.m,ApplicateArg,varargs[untyped]"></a>
+<dt><pre><span class="Keyword">macro</span> <a href="#forceApply.m%2CApplicateArg%2Cvarargs%5Buntyped%5D"><span class="Identifier">forceApply</span></a><span class="Other">(</span><span class="Identifier">appl</span><span class="Other">:</span> <a href="applicates.html#ApplicateArg"><span class="Identifier">ApplicateArg</span></a><span class="Other">;</span> <span class="Identifier">args</span><span class="Other">:</span> <span class="Identifier">varargs</span><span class="Other">[</span><span class="Identifier">untyped</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">untyped</span></pre></dt>
+<dd>
+
+<p>applies the applicate by injecting the applicate routine, even if already in scope, then calling it with the given arguments</p>
+<p>realistically, the applicate routine is never in scope, but if you really come across a case where it is then you can use this</p>
+
+&nbsp;&nbsp;<a
+href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L399"
+class="link-seesrc" target="_blank">Source</a>
+<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L399" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
 <a id="|.m,ApplicateArg,untyped"></a>
 <dt><pre><span class="Keyword">macro</span> <a href="#%7C.m%2CApplicateArg%2Cuntyped"><span class="Identifier">`|`</span></a><span class="Other">(</span><span class="Identifier">appl</span><span class="Other">:</span> <a href="applicates.html#ApplicateArg"><span class="Identifier">ApplicateArg</span></a><span class="Other">;</span> <span class="Identifier">arg</span><span class="Other">:</span> <span class="Identifier">untyped</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">untyped</span></pre></dt>
 <dd>
@@ -451,9 +466,9 @@ class="link-seesrc" target="_blank">Source</a>
 </span><span class="Identifier">doAssert</span><span class="Whitespace"> </span><span class="Identifier">foo</span><span class="Whitespace"> </span><span class="Operator">|</span><span class="Whitespace"> </span><span class="DecNumber">1</span><span class="Whitespace"> </span><span class="Operator">==</span><span class="Whitespace"> </span><span class="DecNumber">2</span><span class="Whitespace">
 </span><span class="Identifier">doAssert</span><span class="Whitespace"> </span><span class="Punctuation">(</span><span class="Punctuation">(</span><span class="Identifier">a</span><span class="Punctuation">,</span><span class="Whitespace"> </span><span class="Identifier">b</span><span class="Punctuation">)</span><span class="Whitespace"> </span><span class="Operator">!=&gt;</span><span class="Whitespace"> </span><span class="Identifier">a</span><span class="Whitespace"> </span><span class="Operator">+</span><span class="Whitespace"> </span><span class="Identifier">b</span><span class="Punctuation">)</span><span class="Whitespace"> </span><span class="Operator">|</span><span class="Whitespace"> </span><span class="Punctuation">(</span><span class="DecNumber">1</span><span class="Punctuation">,</span><span class="Whitespace"> </span><span class="DecNumber">2</span><span class="Punctuation">)</span><span class="Whitespace"> </span><span class="Operator">==</span><span class="Whitespace"> </span><span class="DecNumber">3</span></pre>
 &nbsp;&nbsp;<a
-href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L413"
+href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L430"
 class="link-seesrc" target="_blank">Source</a>
-<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L413" class="link-seesrc" target="_blank" >Edit</a>
+<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L430" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 <a id="\.m,untyped"></a>
@@ -475,9 +490,9 @@ class="link-seesrc" target="_blank">Source</a>
 </span><span class="Identifier">doAssert</span><span class="Whitespace"> </span><span class="Operator">\</span><span class="Identifier">baz</span><span class="Punctuation">(</span><span class="Punctuation">)</span><span class="Whitespace"> </span><span class="Operator">==</span><span class="Whitespace"> </span><span class="DecNumber">10</span><span class="Whitespace">
 </span><span class="Identifier">doAssert</span><span class="Whitespace"> </span><span class="Operator">\</span><span class="Identifier">baz</span><span class="Whitespace"> </span><span class="Operator">==</span><span class="Whitespace"> </span><span class="DecNumber">10</span></pre>
 &nbsp;&nbsp;<a
-href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L433"
+href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L450"
 class="link-seesrc" target="_blank">Source</a>
-<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L433" class="link-seesrc" target="_blank" >Edit</a>
+<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L450" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 
@@ -545,9 +560,9 @@ class="link-seesrc" target="_blank">Source</a>
 <p>It's hard to conditionally define routines based on experimental features. Nim currently does not error with experimental operator overloads if they are templates, so this specific routine works. However if you run into problems with the call operator, <tt class="docutils literal"><span class="pre">import except</span></tt> should do the trick.</p>
 
 &nbsp;&nbsp;<a
-href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L399"
+href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L416"
 class="link-seesrc" target="_blank">Source</a>
-<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L399" class="link-seesrc" target="_blank" >Edit</a>
+<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L416" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 <a id="|<.t,untyped,ApplicateArg"></a>
@@ -556,9 +571,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 flipped <tt class="docutils literal"><span class="pre">|</span></tt>
 &nbsp;&nbsp;<a
-href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L429"
+href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L446"
 class="link-seesrc" target="_blank">Source</a>
-<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L429" class="link-seesrc" target="_blank" >Edit</a>
+<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L446" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 
@@ -571,7 +586,7 @@ class="link-seesrc" target="_blank">Source</a>
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2020-12-04 14:35:03 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2020-12-04 14:40:44 UTC</small>
       </div>
     </div>
   </div>

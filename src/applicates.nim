@@ -396,6 +396,23 @@ macro apply*(appl: ApplicateArg, args: varargs[untyped]): untyped =
       `a`
     `aCall`
 
+macro forceApply*(appl: ApplicateArg, args: varargs[untyped]): untyped =
+  ## applies the applicate by injecting the applicate routine,
+  ## even if already in scope, then calling it with the given arguments
+  ## 
+  ## realistically, the applicate routine is never in scope, but if you
+  ## really come across a case where it is then you can use this
+  let a = appl.node
+  let templName = ident repr a[0]
+  let aCall = newNimNode(nnkCall, args)
+  aCall.add(templName)
+  for arg in args:
+    aCall.add(arg)
+  result = quote do:
+    block:
+      `a`
+      `aCall`
+
 template `()`*(appl: ApplicateArg, args: varargs[untyped]): untyped =
   ## Call operator alias for `apply`. Must turn on experimental Nim feature
   ## `callOperator` to use. Note that this experimental feature seems to be
