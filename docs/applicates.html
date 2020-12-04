@@ -489,7 +489,7 @@ class="link-seesrc" target="_blank">Source</a>
 <dt><pre><span class="Keyword">template</span> <a href="#%21%3D%3E.t%2C%2C"><span class="Identifier">`!=&gt;`</span></a><span class="Other">(</span><span class="Identifier">params</span><span class="Other">,</span> <span class="Identifier">body</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">untyped</span></pre></dt>
 <dd>
 
-infix version of <tt class="docutils literal"><span class="pre">applicate</span></tt>, same syntax
+infix version of <tt class="docutils literal"><span class="pre">applicate</span></tt>, same parameter syntax
 <p><strong class="examples_text">Example:</strong></p>
 <pre class="listing"><span class="Identifier">doAssert</span><span class="Whitespace"> </span><span class="Punctuation">(</span><span class="Identifier">x</span><span class="Whitespace"> </span><span class="Operator">!=&gt;</span><span class="Whitespace"> </span><span class="Identifier">x</span><span class="Whitespace"> </span><span class="Operator">+</span><span class="Whitespace"> </span><span class="DecNumber">1</span><span class="Punctuation">)</span><span class="Operator">.</span><span class="Identifier">apply</span><span class="Punctuation">(</span><span class="DecNumber">2</span><span class="Punctuation">)</span><span class="Whitespace"> </span><span class="Operator">==</span><span class="Whitespace"> </span><span class="DecNumber">3</span><span class="Whitespace">
 </span><span class="Keyword">const</span><span class="Whitespace"> </span><span class="Identifier">foo</span><span class="Whitespace"> </span><span class="Operator">=</span><span class="Whitespace"> </span><span class="Punctuation">(</span><span class="Identifier">a</span><span class="Punctuation">,</span><span class="Whitespace"> </span><span class="Identifier">b</span><span class="Punctuation">)</span><span class="Whitespace"> </span><span class="Operator">!=&gt;</span><span class="Whitespace"> </span><span class="Identifier">a</span><span class="Whitespace"> </span><span class="Operator">+</span><span class="Whitespace"> </span><span class="Identifier">b</span><span class="Whitespace">
@@ -504,7 +504,7 @@ class="link-seesrc" target="_blank">Source</a>
 <dt><pre><span class="Keyword">template</span> <a href="#%21%3D%3E.t"><span class="Identifier">`!=&gt;`</span></a><span class="Other">(</span><span class="Identifier">body</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">untyped</span></pre></dt>
 <dd>
 
-anonymous applicate no arguments
+same as <tt class="docutils literal"><span class="pre">applicate(body)</span></tt>
 &nbsp;&nbsp;<a
 href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L267"
 class="link-seesrc" target="_blank">Source</a>
@@ -515,7 +515,7 @@ class="link-seesrc" target="_blank">Source</a>
 <dt><pre><span class="Keyword">template</span> <a href="#%5C%3D%3E.t%2C%2C"><span class="Identifier">`\=&gt;`</span></a><span class="Other">(</span><span class="Identifier">params</span><span class="Other">,</span> <span class="Identifier">body</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">untyped</span></pre></dt>
 <dd>
 
-infix version of <tt class="docutils literal"><span class="pre">applicate</span></tt>, same syntax
+alias for <tt class="docutils literal"><span class="pre">!=&gt;</span></tt>
 <p><strong class="examples_text">Example:</strong></p>
 <pre class="listing"><span class="Identifier">doAssert</span><span class="Whitespace"> </span><span class="Punctuation">(</span><span class="Identifier">x</span><span class="Whitespace"> </span><span class="Operator">\=&gt;</span><span class="Whitespace"> </span><span class="Identifier">x</span><span class="Whitespace"> </span><span class="Operator">+</span><span class="Whitespace"> </span><span class="DecNumber">1</span><span class="Punctuation">)</span><span class="Operator">.</span><span class="Identifier">apply</span><span class="Punctuation">(</span><span class="DecNumber">2</span><span class="Punctuation">)</span><span class="Whitespace"> </span><span class="Operator">==</span><span class="Whitespace"> </span><span class="DecNumber">3</span><span class="Whitespace">
 </span><span class="Keyword">const</span><span class="Whitespace"> </span><span class="Identifier">foo</span><span class="Whitespace"> </span><span class="Operator">=</span><span class="Whitespace"> </span><span class="Punctuation">(</span><span class="Identifier">a</span><span class="Punctuation">,</span><span class="Whitespace"> </span><span class="Identifier">b</span><span class="Punctuation">)</span><span class="Whitespace"> </span><span class="Operator">\=&gt;</span><span class="Whitespace"> </span><span class="Identifier">a</span><span class="Whitespace"> </span><span class="Operator">+</span><span class="Whitespace"> </span><span class="Identifier">b</span><span class="Whitespace">
@@ -530,7 +530,7 @@ class="link-seesrc" target="_blank">Source</a>
 <dt><pre><span class="Keyword">template</span> <a href="#%5C%3D%3E.t"><span class="Identifier">`\=&gt;`</span></a><span class="Other">(</span><span class="Identifier">body</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">untyped</span></pre></dt>
 <dd>
 
-anonymous applicate no arguments
+alias for <tt class="docutils literal"><span class="pre">!=&gt;</span></tt>
 &nbsp;&nbsp;<a
 href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L279"
 class="link-seesrc" target="_blank">Source</a>
@@ -571,7 +571,7 @@ class="link-seesrc" target="_blank">Source</a>
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2020-12-04 14:31:38 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2020-12-04 14:35:03 UTC</small>
       </div>
     </div>
   </div>

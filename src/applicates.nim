@@ -240,7 +240,7 @@ macro applicate*(body): untyped =
       let x {.inject.} = 3
     defineX.apply()
     doAssert x == 3
-    
+
     # this is how do notation works, which we unfortunately can't show
     # as an example because runnableexamples breaks do notation:
     
@@ -257,7 +257,7 @@ macro applicate*(body): untyped =
     result = getAst(applicate(args, body))
 
 template `!=>`*(params, body): untyped =
-  ## infix version of `applicate`, same syntax
+  ## infix version of `applicate`, same parameter syntax
   runnableExamples:
     doAssert (x !=> x + 1).apply(2) == 3
     const foo = (a, b) !=> a + b
@@ -265,11 +265,11 @@ template `!=>`*(params, body): untyped =
   applicate(params, body)
 
 template `!=>`*(body): untyped =
-  ## anonymous applicate no arguments
+  ## same as ``applicate(body)``
   applicate(body)
 
 template `\=>`*(params, body): untyped =
-  ## infix version of `applicate`, same syntax
+  ## alias for `!=>`
   runnableExamples:
     doAssert (x \=> x + 1).apply(2) == 3
     const foo = (a, b) \=> a + b
@@ -277,7 +277,7 @@ template `\=>`*(params, body): untyped =
   applicate(params, body)
 
 template `\=>`*(body): untyped =
-  ## anonymous applicate no arguments
+  ## alias for `!=>`
   applicate(body)
 
 macro toUntyped*(sym: untyped, arity: static int): Applicate =
