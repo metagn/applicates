@@ -1,6 +1,6 @@
 # Package
 
-version       = "0.0.0" # unreleased
+version       = "0.1.0"
 author        = "hlaaftana"
 description   = "\"pointers\" to cached AST that instantiate routines when called"
 license       = "MIT"
