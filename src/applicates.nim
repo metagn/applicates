@@ -50,7 +50,11 @@ macro makeApplicate*(body): untyped =
     let key = when cacheUseTable: $num else: num
     result = newCall(bindSym"Applicate", newLit(key))
     if body[0].kind != nnkEmpty:
-      result = newConstStmt(ident repr body[0], result)
+      result = newConstStmt(
+        if body[0].kind in {nnkSym, nnkClosedSymChoice, nnkOpenSymChoice}:
+          ident repr body[0]
+        else:
+          body[0], result)
     let b = newNimNode(
       if body.kind in {nnkDo, nnkLambda}:
         nnkProcDef
@@ -202,7 +206,7 @@ macro applicate*(params, body): untyped =
           formalParams[i][1] = p[1]
         lastIdents = 0
         newIdentDefs(p[0], p[1])
-      of nnkIdent, nnkSym, nnkClosedSymChoice, nnkOpenSymChoice:
+      of nnkIdent, nnkSym, nnkClosedSymChoice, nnkOpenSymChoice, nnkAccQuoted:
         inc lastIdents
         newIdentDefs(p, newEmptyNode())
       elif p.kind == nnkInfix and p[0].eqIdent"is":
@@ -386,7 +390,11 @@ macro apply*(appl: ApplicateArg, args: varargs[untyped]): untyped =
     const incr = x !=> x + 1
     doAssert incr.apply(1) == 2
   let a = appl.node
-  let templName = ident repr a[0]
+  let templName =
+    if a[0].kind in {nnkSym, nnkClosedSymChoice, nnkOpenSymChoice}:
+      ident repr a[0]
+    else:
+      a[0]
   let aCall = newNimNode(nnkCall, args)
   aCall.add(templName)
   for arg in args:
@@ -403,15 +411,16 @@ macro forceApply*(appl: ApplicateArg, args: varargs[untyped]): untyped =
   ## realistically, the applicate routine is never in scope, but if you
   ## really come across a case where it is then you can use this
   let a = appl.node
-  let templName = ident repr a[0]
+  let templName =
+    if a[0].kind in {nnkSym, nnkClosedSymChoice, nnkOpenSymChoice}:
+      ident repr a[0]
+    else:
+      a[0]
   let aCall = newNimNode(nnkCall, args)
   aCall.add(templName)
   for arg in args:
     aCall.add(arg)
-  result = quote do:
-    block:
-      `a`
-      `aCall`
+  result = newBlockStmt(newStmtList(a, aCall))
 
 template `()`*(appl: ApplicateArg, args: varargs[untyped]): untyped =
   ## Call operator alias for `apply`. Must turn on experimental Nim feature

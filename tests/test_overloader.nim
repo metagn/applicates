@@ -17,10 +17,9 @@ macro overloadable(body) =
   body[0] = tempName
   if body[^1].kind == nnkEmpty: body[^1] = newStmtList()
   body[^1].add(quote do:
-    const cache = CacheSeq("overloads." & `tempNameStr`)
     macro loadOverloads(): untyped =
       result = newTree(nnkWhenStmt)
-      for o in cache:
+      for o in CacheSeq("overloads." & `tempNameStr`):
         let o = copy o
         if result.len > 0 and result[^1].kind == nnkElse:
           result.insert(result.len - 1, o)
