@@ -16,7 +16,7 @@ proc map[T](s: seq[T], f: ApplicateArg): seq[T] =
       # or
       f(s[i]) # uses experimental callOperator feature, if it breaks your code use `import except`
 
-doAssert @[1, 2, 3, 4, 5].map(applicate(x) do: x - 1) == @[0, 1, 2, 3, 4]
+doAssert @[1, 2, 3, 4, 5].map(applicate do (x): x - 1) == @[0, 1, 2, 3, 4]
 # alternate syntax (doesnt look great but i cant think of anything better):
 doAssert @[1, 2, 3, 4, 5].map(x !=> x * 2) == @[2, 4, 6, 8, 10]
 ```
