@@ -54,6 +54,7 @@ test "map test":
       result[i] = f.apply(s[i])
 
   check @[1, 2, 3, 4, 5].map(applicate(x) do: x - 1) == @[0, 1, 2, 3, 4]
+  check @[1, 2, 3, 4, 5].map(applicate do (x): x - 1) == @[0, 1, 2, 3, 4]
   applicate double(x): x * 2
   check @[1, 2, 3, 4, 5].map(double) == @[2, 4, 6, 8, 10]
 
