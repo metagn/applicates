@@ -42,6 +42,15 @@ test "applicate macro and apply":
   
   foo.apply(5, FooType)
   check x.field == 5
+    
+  const incr = applicate do (x: int) -> int: x + 1
+  doAssert incr.apply(x.field) == 6
+
+  applicate named do (a, b; c: int):
+    let a = b(c)
+  
+  named.apply(upperA, char, 65)
+  doAssert upperA == 'A'
   
 test "operators":
   check (x !=> x[^1]) | "abc" == 'c'
