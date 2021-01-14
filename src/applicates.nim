@@ -150,7 +150,7 @@ macro applicate*(params, body): untyped =
       appl.apply()
     
     var c = 0
-    when false: # runnableExamples does not handle do: well
+    when false: # runnableExamples does not handle do: correctly, this works otherwise
       double(applicate do:
         double(applicate do:
           double(applicate do: inc c)))
@@ -250,11 +250,25 @@ macro applicate*(body): untyped =
     
     # const incr = applicate do (x: int) -> int: x + 1
     # doAssert incr.apply(x) == 4
+
+    # named:
+    
+    # applicate named do (a, b; c: int):
+    #   let a = b(c)
+    # named.apply(upperA, char, 65)
+    # doAssert upperA == 'A'
   if body.kind == nnkDo:
-    if body[3][0].kind == nnkEmpty: body[3][0] = ident"untyped"
     let templ = newNimNode(nnkTemplateDef, body)
     for s in body:
       templ.add(s)
+    if templ[3][0].kind == nnkEmpty: templ[3][0] = ident"untyped"
+    result = getAst(makeTypedApplicate(templ))
+  elif body.kind in {nnkCall, nnkCommand} and body.len == 2 and body[1].kind == nnkDo:
+    let templ = newNimNode(nnkTemplateDef, body[1])
+    for s in body[1]:
+      templ.add(s)
+    if templ[3][0].kind == nnkEmpty: templ[3][0] = ident"untyped"
+    templ[0] = body[0]
     result = getAst(makeTypedApplicate(templ))
   else:
     let args = newPar()
