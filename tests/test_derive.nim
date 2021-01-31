@@ -9,7 +9,7 @@ template mix(h: var Hash, i) = h = h !& i
 template finish(h: var Hash) = h = !$ h
 
 template class(name, decls) =
-  applicate `name`(Self):
+  applicate `name` do (Self {.inject.}):
     decls
 
 class Hashable:
