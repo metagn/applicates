@@ -3,6 +3,7 @@ import unittest, applicates, macros, macrocache
 type Overloadable = object
   appl: Applicate
   overloads: CacheSeq
+  # really pushing it with the cache
 
 macro overload(c: static Overloadable, cond, body: untyped) =
   c.overloads.add(newTree(nnkElifBranch, cond, body))

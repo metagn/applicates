@@ -80,3 +80,9 @@ test "toUntyped":
   const adder = toUntyped(`+`, 2)
   const toString = toUntyped(`$`)
   check (2, 3) |< adder |< toString == "5"
+
+test "fromSymbol":
+  const adder = fromSymbol(`+`)
+  const toString = fromSymbol(`$`)
+  const next = fromSymbol(succ)
+  check (2, 3) |< adder |< next |< toString == "6"
