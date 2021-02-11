@@ -12,21 +12,22 @@ requires "nim >= 0.20.0"
 
 import os
 
-task docs, "build docs":
-  const
-    gitUrl = "https://github.com/hlaaftana/applicates"
-    gitCommit = "master"
-    gitDevel = "master" 
-  for f in walkDirRec("src"):
-    exec "nim doc --git.url:" & gitUrl &
-      " --git.commit:" & gitCommit &
-      " --git.devel:" & gitDevel &
-      " --outdir:docs " & f
+when (compiles do: import nimbleutils):
+  import nimbleutils
 
-task tests, "runs tests with all define variations":
-  echo "testing normally"
-  exec "nimble test"
-  echo "testing with macro cache"
-  exec "nimble test -d:applicatesUseMacroCache"
-  echo "testing with table cache"
-  exec "nimble test -d:applicatesCacheUseTable"
+task docs, "build docs for all modules":
+  when declared(buildDocs):
+    buildDocs(gitUrl = "https://github.com/hlaaftana/applicates")
+  else:
+    echo "docs task not implemented, need nimbleutils"
+
+task tests, "run tests for multiple backends and defines":
+  when declared(runTests):
+    runTests(
+      # set to only js or only c for less runs:
+      backends = {c, js}, 
+      # these defines are pretty stable, comment this out for less runs:
+      optionCombos = @["", "-d:applicatesUseMacroCache", "-d:applicatesCacheUseTable"]
+    )
+  else:
+    echo "tests task not implemented, need nimbleutils"
