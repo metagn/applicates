@@ -52,14 +52,8 @@ test "filter map use":
 import macros
 
 macro iterate(init, st): untyped =
-  result = newCall(bindSym"iter", init)
-  for s in st:
-    if s.kind == nnkIdent:
-      result = newCall(bindSym"apply", s, result)
-    else:
-      result = newCall(bindSym"apply", s[0], result)
-      for i in 1..<s.len:
-        result.add(s[i])
+  st.insert(0, bindSym"iter")
+  result = getAst(chain(init, st))
 
 test "iterate":
   var s: seq[int]
