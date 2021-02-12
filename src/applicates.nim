@@ -389,7 +389,9 @@ macro toUntyped*(sym: typed): Applicate =
 
 proc node*(appl: Applicate): NimNode {.compileTime.} =
   ## retrieves the node of the applicate from the cache
-  applicateCache[(when cacheUseTable: string else: int)(appl)]
+  result = applicateCache[(when cacheUseTable: string else: int)(appl)]
+  # macrocache should copy automatically, but it doesn't yet:
+  result = copy result
 
 macro arity*(appl: ApplicateArg): static int =
   ## gets arity of applicate. check `inferArity` for meaning of
@@ -433,7 +435,7 @@ macro instantiateAs*(appl: ApplicateArg, name: untyped): untyped =
   let n = appl.node
   case n.kind
   of RoutineNodes:
-    result = copy n
+    result = n
     result[0] =
       if name.kind == nnkPrefix and name[0].eqIdent"*":
         postfix(name[1], "*")
@@ -466,10 +468,8 @@ macro apply*(appl: ApplicateArg, args: varargs[untyped]): untyped =
     aCall.add(templName)
     for arg in args:
       aCall.add(arg)
-    result = quote do:
-      when not declared(`templName`):
-        `a`
-      `aCall`
+    let declaredCheck = prefix(newCall(bindSym"declared", templName), "not")
+    result = newStmtList(newTree(nnkWhenStmt, newTree(nnkElifBranch, declaredCheck, a)), aCall)
   else:
     result = newCall(a)
     for arg in args: result.add(arg)
@@ -531,24 +531,9 @@ template `|<`*(arg: untyped, appl: ApplicateArg): untyped =
   ## flipped `|`
   appl | arg
 
-macro `\`*(call: untyped): untyped =
-  ## converts a call expression to an applicate call expression
-  ## 
-  ## supports dot calls, if the given expression is not a dot expression
-  ## or call or command then it will simply apply it with no arguments
-  ## 
-  ## also supports command calls but not sure how you'd use it with the syntax
-  runnableExamples:
-    const foo = x !=> x + 1
-    doAssert \foo(1) == 2
-    doAssert \1.foo == 2
-    const bar = (a, b) !=> a + b
-    doAssert \bar(1, 2) == 3
-    doAssert \1.bar(2) == 3
-    const baz = !=> 10
-    doAssert \baz() == 10
-    doAssert \baz == 10
-  result = newNimNode(nnkCall, call)
+proc insertApply*(call: NimNode): NimNode =
+  ## turns a regular call node into an `apply` call
+  result = newNimNode(if call.kind == nnkCommand: nnkCommand else: nnkCall, call)
   result.add(bindSym"apply")
   case call.kind
   of nnkDotExpr:
@@ -562,3 +547,62 @@ macro `\`*(call: untyped): untyped =
       result.add(call[i])
   else:
     result.add(call)
+
+macro `\`*(call: untyped): untyped =
+  ## converts a call expression to an applicate call expression
+  ## 
+  ## supports dot calls, if the given expression is not a dot expression
+  ## or call or command then it will simply apply it with no arguments
+  runnableExamples:
+    const foo = x !=> x + 1
+    doAssert \foo(1) == 2
+    doAssert \1.foo == 2
+    const bar = (a, b) !=> a + b
+    doAssert \bar(1, 2) == 3
+    doAssert \1.bar(2) == 3
+    const baz = !=> 10
+    doAssert \baz() == 10
+    doAssert \baz == 10
+  result = insertApply(call)
+
+proc pipeIntoCall*(value, call: NimNode): NimNode =
+  ## inserts value as first argument of `call`
+  case call.kind
+  of nnkCall, nnkCommand:
+    result = copy(call)
+    result.insert(1, value)
+  else:
+    result = newCall(call, value)
+
+macro `|>`*(value, call): untyped =
+  ## inserts value as first argument of call, and converts it to applicate call expression
+  ## 
+  ## if call is a dot call, it is not modified, so value becomes the second argument in the call
+  runnableExamples:
+    const incr = fromSymbol(system.succ)
+    const multiply = fromSymbol(`*`)
+    const divide = fromSymbol(`/`)
+
+    let foo = 3 |>
+      multiply(2) |>
+      incr |>
+      14.divide
+    doAssert foo == 2
+  result = insertApply(pipeIntoCall(value, call))
+
+macro chain*(initial, calls): untyped =
+  ## statement list chained version of `|>`
+  runnableExamples:
+    const incr = fromSymbol(system.succ)
+    const multiply = fromSymbol(`*`)
+    const divide = fromSymbol(`/`)
+
+    let foo = chain 3:
+      multiply 2
+      incr
+      14.divide
+    doAssert foo == 2
+    
+  result = initial
+  for call in calls:
+    result = insertApply(pipeIntoCall(result, call))

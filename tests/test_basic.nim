@@ -42,6 +42,7 @@ test "applicate macro and apply":
   
   foo.apply(5, FooType)
   check x.field == 5
+  check not compiles(x is FooType) # gensym'd
     
   const incr = applicate do (x: int) -> int: x + 1
   doAssert incr.apply(x.field) == 6
