@@ -4,14 +4,17 @@ const cacheUseTable = defined(applicatesCacheUseTable) and not defined(nimdoc)
 const useCache = defined(applicatesUseMacroCache) and not defined(nimdoc)
 
 when cacheUseTable:
-  type Applicate* = distinct string
+  type ApplicateKey* = string
 else:
-  type Applicate* = distinct int
+  type ApplicateKey* = int
     ## "pointer to" (index of) applicate AST. if you define
-    ## ``applicatesCacheUseTable`` this will be a distinct string
+    ## ``applicatesCacheUseTable`` this will be a string
 
-type ApplicateArg* = static Applicate
-  ## `static Applicate` to use for types of arguments
+type
+  Applicate* = distinct ApplicateKey
+    ## distinct version of ApplicateKey
+  ApplicateArg* = static Applicate
+    ## `static Applicate` to use for types of arguments
 
 when useCache:
   import macrocache
@@ -34,6 +37,14 @@ else:
     ## `applicatesCacheUseTable` then it will use a `CacheTable` with
     ## unique strings
 
+proc registerApplicate*(node: NimNode): ApplicateKey =
+  let num = len(applicateCache)
+  result = when cacheUseTable: $num else: num
+  when cacheUseTable:
+    applicateCache[result] = node
+  else:
+    add(applicateCache, node)
+
 macro makeApplicate*(body): untyped =
   ## Registers given routine definitions as applicates and
   ## assigns each applicate to a constant with the name of its routine.
@@ -51,15 +62,8 @@ macro makeApplicate*(body): untyped =
     for st in body: result.add(getAst(makeApplicate(st)))
   of RoutineNodes:
     let num = len(applicateCache)
-    let key = when cacheUseTable: $num else: num
+    #let key = when cacheUseTable: $num else: num
     # ^ is this even going to work in the future
-    result = newCall(bindSym"Applicate", newLit(key))
-    if body[0].kind != nnkEmpty:
-      result = newConstStmt(
-        if body[0].kind in {nnkSym, nnkClosedSymChoice, nnkOpenSymChoice}:
-          ident repr body[0]
-        else:
-          body[0], result)
     let b = newNimNode(
       if body.kind in {nnkDo, nnkLambda}:
         nnkProcDef
@@ -77,10 +81,18 @@ macro makeApplicate*(body): untyped =
       of nnkMethodDef: nskMethod
       of nnkFuncDef: nskFunc
       else: nskTemplate, "appl" & $num)
-    when cacheUseTable:
+    let key = registerApplicate(b)
+    result = newCall(bindSym"Applicate", newLit(key))
+    if body[0].kind != nnkEmpty:
+      result = newConstStmt(
+        if body[0].kind in {nnkSym, nnkClosedSymChoice, nnkOpenSymChoice}:
+          ident repr body[0]
+        else:
+          body[0], result)
+    #[when cacheUseTable:
       applicateCache[key] = b
     else:
-      add(applicateCache, b)
+      add(applicateCache, b)]#
   else:
     error("cannot turn non-routine into applicate, given kind " & $body.kind, body)
 
@@ -141,6 +153,9 @@ macro applicate*(params, body): untyped =
   ## and `paramList -> T` for return type or `paramsList: T` for return
   ## type if `paramsList` is in parentheses. type annotations that are grouped
   ## together like `a, b: int` resolve to `a: int, b: int`.
+  ## 
+  ## the param syntax might be removed in the future given that `do` directly
+  ## replicates regular routine parameters
   ## 
   ## note: the return type is untyped by default unlike templates, where it is void
   runnableExamples:
@@ -279,43 +294,13 @@ macro applicate*(body): untyped =
     let args = newPar()
     result = getAst(applicate(args, body))
 
-template `!=>`*(params, body): untyped =
-  ## infix version of `applicate`, same parameter syntax
-  runnableExamples:
-    doAssert (x !=> x + 1).apply(2) == 3
-    const foo = (a, b) !=> a + b
-    doAssert foo.apply(1, 2) == 3
-  applicate(params, body)
-
-template `!=>`*(body): untyped =
-  ## same as ``applicate(body)``
-  applicate(body)
-
-template `\=>`*(params, body): untyped =
-  ## alias for `!=>`
-  runnableExamples:
-    doAssert (x \=> x + 1).apply(2) == 3
-    const foo = (a, b) \=> a + b
-    doAssert foo.apply(1, 2) == 3
-  applicate(params, body)
-
-template `\=>`*(body): untyped =
-  ## alias for `!=>`
-  applicate(body)
-
 macro fromSymbol*(sym: untyped): Applicate =
   ## directly registers `sym` as an applicate node. might be more efficient
-  ## than `toUntyped` for most cases, and hopefully shouldn't have to care
-  ## about arity
+  ## than `toUntyped` for most cases, and accepts varying arities
   runnableExamples:
     const plus = fromSymbol(`+`)
     doAssert plus.apply(1, 2) == 3
-  let num = len(applicateCache)
-  let key = when cacheUseTable: $num else: num
-  when cacheUseTable:
-    applicateCache[key] = sym
-  else:
-    add(applicateCache, sym)
+  let key = registerApplicate(sym)
   result = newCall(bindSym"Applicate", newLit(key))
 
 macro toUntyped*(sym: untyped, arity: static int): Applicate =
@@ -497,112 +482,5 @@ macro forceApply*(appl: ApplicateArg, args: varargs[untyped]): untyped =
     result = newCall(a)
     for arg in args: result.add(arg)
 
-template `()`*(appl: ApplicateArg, args: varargs[untyped]): untyped =
-  ## Call operator alias for `apply`. Must turn on experimental Nim feature
-  ## `callOperator` to use. Note that this experimental feature seems to be
-  ## fairly broken. This definition might also go away if Nim starts to error
-  ## on templates named to overload experimental operators (which it currently
-  ## doesn't inconsistently with other routines), as a `compiles` check does
-  ## not work with the `experimental` pragma in other modules.
-  ## 
-  ## It's hard to conditionally define routines based on experimental features.
-  ## Nim currently does not error with experimental operator overloads if they
-  ## are templates, so this specific routine works. However if you run into
-  ## problems with the call operator, `import except` should do the trick.
-  appl.apply(args)
-
-macro `|`*(appl: ApplicateArg, arg: untyped): untyped =
-  ## attempted operator syntax for `apply`. if `arg` is in parentheses
-  ## then its arguments are broken up, otherwise it is passed as a single argument
-  ## 
-  ## note that you can undefine operators you don't want via ``import except``
-  runnableExamples:
-    doAssert (x !=> x + 1) | 1 == 2
-    const foo = x !=> x + 1
-    doAssert foo | 1 == 2
-    doAssert ((a, b) !=> a + b) | (1, 2) == 3
-  var args = newNimNode(nnkArgList, arg)
-  if arg.kind in {nnkPar, nnkTupleConstr}:
-    for a in arg: args.add(a)
-  else: args.add(arg)
-  result = getAst apply(appl, args)
-
-template `|<`*(arg: untyped, appl: ApplicateArg): untyped =
-  ## flipped `|`
-  appl | arg
-
-proc insertApply*(call: NimNode): NimNode =
-  ## turns a regular call node into an `apply` call
-  result = newNimNode(if call.kind == nnkCommand: nnkCommand else: nnkCall, call)
-  result.add(bindSym"apply")
-  case call.kind
-  of nnkDotExpr:
-    result.add(call[1], call[0])
-  of nnkCall, nnkCommand:
-    if call[0].kind == nnkDotExpr:
-      result.add(call[0][1], call[0][0])
-    else:
-      result.add(call[0])
-    for i in 1..<call.len:
-      result.add(call[i])
-  else:
-    result.add(call)
-
-macro `\`*(call: untyped): untyped =
-  ## converts a call expression to an applicate call expression
-  ## 
-  ## supports dot calls, if the given expression is not a dot expression
-  ## or call or command then it will simply apply it with no arguments
-  runnableExamples:
-    const foo = x !=> x + 1
-    doAssert \foo(1) == 2
-    doAssert \1.foo == 2
-    const bar = (a, b) !=> a + b
-    doAssert \bar(1, 2) == 3
-    doAssert \1.bar(2) == 3
-    const baz = !=> 10
-    doAssert \baz() == 10
-    doAssert \baz == 10
-  result = insertApply(call)
-
-proc pipeIntoCall*(value, call: NimNode): NimNode =
-  ## inserts value as first argument of `call`
-  case call.kind
-  of nnkCall, nnkCommand:
-    result = copy(call)
-    result.insert(1, value)
-  else:
-    result = newCall(call, value)
-
-macro `|>`*(value, call): untyped =
-  ## inserts value as first argument of call, and converts it to applicate call expression
-  ## 
-  ## if call is a dot call, it is not modified, so value becomes the second argument in the call
-  runnableExamples:
-    const incr = fromSymbol(system.succ)
-    const multiply = fromSymbol(`*`)
-    const divide = fromSymbol(`/`)
-
-    let foo = 3 |>
-      multiply(2) |>
-      incr |>
-      14.divide
-    doAssert foo == 2
-  result = insertApply(pipeIntoCall(value, call))
-
-macro chain*(initial, calls): untyped =
-  ## statement list chained version of `|>`
-  runnableExamples:
-    const incr = fromSymbol(system.succ)
-    const multiply = fromSymbol(`*`)
-    const divide = fromSymbol(`/`)
-
-    let foo = chain 3:
-      multiply 2
-      incr
-      14.divide
-    doAssert foo == 2
-    
-  result = initial
-  for call in calls:
-    result = insertApply(pipeIntoCall(result, call))
+import applicates/operators
+export operators
