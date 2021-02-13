@@ -52,7 +52,9 @@ test "applicate macro and apply":
   
   named.apply(upperA, char, 65)
   doAssert upperA == 'A'
-  
+
+import applicates/operators
+
 test "operators":
   check (x !=> x[^1]) | "abc" == 'c'
   check \((name, value) \=> (let name = value; name))(a, 3) == 3

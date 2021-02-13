@@ -1,4 +1,4 @@
-import unittest, applicates
+import unittest, applicates, applicates/operators
 
 applicate iter(iter: untyped):
   applicate (agg: static Applicate):

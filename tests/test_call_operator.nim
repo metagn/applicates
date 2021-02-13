@@ -2,6 +2,8 @@
 
 import unittest, applicates
 
+from applicates/operators import `()`
+
 test "call operator works":
   applicate double do (x): x * 2
   check double(3) == 6

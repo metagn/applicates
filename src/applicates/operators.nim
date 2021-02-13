@@ -3,6 +3,7 @@ import ../applicates, macros
 template `!=>`*(params, body): untyped =
   ## infix version of `applicate`, same parameter syntax
   runnableExamples:
+    import ../applicates
     doAssert (x !=> x + 1).apply(2) == 3
     const foo = (a, b) !=> a + b
     doAssert foo.apply(1, 2) == 3
@@ -15,6 +16,7 @@ template `!=>`*(body): untyped =
 template `\=>`*(params, body): untyped =
   ## alias for `!=>`
   runnableExamples:
+    import ../applicates
     doAssert (x \=> x + 1).apply(2) == 3
     const foo = (a, b) \=> a + b
     doAssert foo.apply(1, 2) == 3
@@ -44,6 +46,7 @@ macro `|`*(appl: ApplicateArg, arg: untyped): untyped =
   ## 
   ## note that you can undefine operators you don't want via ``import except``
   runnableExamples:
+    import ../applicates
     doAssert (x !=> x + 1) | 1 == 2
     const foo = x !=> x + 1
     doAssert foo | 1 == 2
@@ -106,6 +109,8 @@ macro `|>`*(value, call): untyped =
   ## 
   ## if call is a dot call, it is not modified, so value becomes the second argument in the call
   runnableExamples:
+    import ../applicates
+
     const incr = fromSymbol(system.succ)
     const multiply = fromSymbol(`*`)
     const divide = fromSymbol(`/`)
@@ -120,6 +125,8 @@ macro `|>`*(value, call): untyped =
 macro chain*(initial, calls): untyped =
   ## statement list chained version of `|>`
   runnableExamples:
+    import ../applicates
+    
     const incr = fromSymbol(system.succ)
     const multiply = fromSymbol(`*`)
     const divide = fromSymbol(`/`)
