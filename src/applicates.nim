@@ -1,49 +1,7 @@
 import macros
 
-const cacheUseTable = defined(applicatesCacheUseTable) and not defined(nimdoc)
-const useCache = defined(applicatesUseMacroCache) and not defined(nimdoc)
-
-when cacheUseTable:
-  type ApplicateKey* = string
-else:
-  type ApplicateKey* = int
-    ## "pointer to" (index of) applicate AST. if you define
-    ## ``applicatesCacheUseTable`` this will be a string
-
-type
-  Applicate* = distinct ApplicateKey
-    ## distinct version of ApplicateKey
-  ApplicateArg* = static Applicate
-    ## `static Applicate` to use for types of arguments
-
-when useCache:
-  import macrocache
-  const applicateCache* =
-    when cacheUseTable:
-      CacheTable "applicates.applicates.table"
-    else:
-      CacheSeq "applicates.applicates"
-elif cacheUseTable:
-  import tables
-  var applicateCache* {.compileTime.}: Table[string, NimNode]
-else:
-  var applicateCache* {.compileTime.}: seq[NimNode]
-    ## the cache containing the routine definition nodes of
-    ## each applicate. can be indexed by the ID of an applicate to receive
-    ## its routine node, which is meant to be put in user code and invoked
-    ## 
-    ## uses a compileTime seq by default, if you define `applicatesUseMacroCache`
-    ## then it will use Nim's `macrocache` types, if you define
-    ## `applicatesCacheUseTable` then it will use a `CacheTable` with
-    ## unique strings
-
-proc registerApplicate*(node: NimNode): ApplicateKey =
-  let num = len(applicateCache)
-  result = when cacheUseTable: $num else: num
-  when cacheUseTable:
-    applicateCache[result] = node
-  else:
-    add(applicateCache, node)
+import applicates/internals
+export ApplicateKey, Applicate, ApplicateArg
 
 macro makeApplicate*(body): untyped =
   ## Registers given routine definitions as applicates and
@@ -61,9 +19,7 @@ macro makeApplicate*(body): untyped =
     result = newNimNode(nnkStmtList, body)
     for st in body: result.add(getAst(makeApplicate(st)))
   of RoutineNodes:
-    let num = len(applicateCache)
-    #let key = when cacheUseTable: $num else: num
-    # ^ is this even going to work in the future
+    let num = applicateCount()
     let b = newNimNode(
       if body.kind in {nnkDo, nnkLambda}:
         nnkProcDef
@@ -81,7 +37,7 @@ macro makeApplicate*(body): untyped =
       of nnkMethodDef: nskMethod
       of nnkFuncDef: nskFunc
       else: nskTemplate, "appl" & $num)
-    let key = registerApplicate(b)
+    let key = registerApplicate(b, num)
     result = newCall(bindSym"Applicate", newLit(key))
     if body[0].kind != nnkEmpty:
       result = newConstStmt(
@@ -89,10 +45,6 @@ macro makeApplicate*(body): untyped =
           ident repr body[0]
         else:
           body[0], result)
-    #[when cacheUseTable:
-      applicateCache[key] = b
-    else:
-      add(applicateCache, b)]#
   else:
     error("cannot turn non-routine into applicate, given kind " & $body.kind, body)
 
@@ -118,7 +70,9 @@ macro makeApplicateFromTyped*(body: typed): untyped =
     error("cannot turn non-routine into applicate, given kind " & $body.kind, body)
 
 macro makeTypedApplicate*(body: untyped): untyped =
-  ## Injects `used` pragma into `body` and calls `makeApplicateFromTyped`.
+  ## Calls `makeApplicateFromTyped` without giving an unused warning.
+  ## 
+  ## Accomplishes this by injecting {.used.}.
   runnableExamples:
     makeTypedApplicate:
       template useIt =
@@ -317,35 +271,6 @@ macro toUntyped*(sym: untyped, arity: static int): Applicate =
     call.add(temp)
   result = getAst(applicate(params, call))
 
-proc inferArity*(sym: NimNode): int =
-  ## infers arity of symbol
-  ## 
-  ## -1 if sym is not a symbol, -2 if implementation
-  ## of a symbol was nil, -3 if symbol choice arities
-  ## do not match
-  case sym.kind
-  of nnkSym:
-    let impl = sym.getImpl
-    if impl.isNil: return -2 # symbol impl nil
-    let fparams = impl[3]
-    for i in 1..<fparams.len:
-      result += fparams[i].len - 2
-  of nnkClosedSymChoice, nnkOpenSymChoice:
-    for i in 0..<sym.len:
-      let s = sym[i]
-      let impl = s.getImpl
-      if impl.isNil: return -2 # symbol impl nil
-      let fparams = impl[3]
-      var arity = 0
-      for i in 1..<fparams.len:
-        arity += fparams[i].len - 2
-      if i == 0:
-        result = arity
-      elif result != arity:
-        result = -3 # symbol arities not shared
-  else:
-    result = -1
-
 macro toUntyped*(sym: typed): Applicate =
   ## infers the arity of `sym` from its symbol then calls `toUntyped(sym, arity)`
   ## 
@@ -372,37 +297,13 @@ macro toUntyped*(sym: typed): Applicate =
     let identSym = ident repr sym
     result = getAst(toUntyped(identSym, arity))
 
-proc node*(appl: Applicate): NimNode {.compileTime.} =
-  ## retrieves the node of the applicate from the cache
-  result = applicateCache[(when cacheUseTable: string else: int)(appl)]
-  # macrocache should copy automatically, but it doesn't yet:
-  result = copy result
-
-macro arity*(appl: ApplicateArg): static int =
-  ## gets arity of applicate. check `inferArity` for meaning of
-  ## negative values
-  runnableExamples:
-    doAssert arity((x, y) !=> x + y) == 2
-    doAssert arity(a !=> a) == 1
-    doAssert arity(!=> 3) == 0
-  let n = appl.node
-  case n.kind
-  of RoutineNodes:
-    let fparams = n[3]
-    var res = 0
-    for i in 1..<fparams.len:
-      res += fparams[i].len - 2
-    result = newLit(res)
-  else:
-    result = newLit(inferArity(n))
-
 macro instantiateAs*(appl: ApplicateArg, name: untyped): untyped =
   ## instantiates the applicate in the scope with the given name
   ## 
   ## helps where `apply` syntax isn't enough (for example generics
   ## and overloading)
   runnableExamples:
-    instantiateAs(x !=> x + 1, incr)
+    instantiateAs(fromSymbol(system.succ), incr)
     doAssert incr(1) == 2
     proc foo[T](x, y: T): T {.makeApplicate.} = x + y
     proc bar(x, y: string): string {.makeApplicate.} = x & y
@@ -439,7 +340,7 @@ macro apply*(appl: ApplicateArg, args: varargs[untyped]): untyped =
   ## applies the applicate by injecting the applicate routine
   ## (if not in scope already) then calling it with the given arguments
   runnableExamples:
-    const incr = x !=> x + 1
+    const incr = fromSymbol(system.succ)
     doAssert incr.apply(1) == 2
   let a = appl.node
   case a.kind
@@ -481,6 +382,3 @@ macro forceApply*(appl: ApplicateArg, args: varargs[untyped]): untyped =
   else:
     result = newCall(a)
     for arg in args: result.add(arg)
-
-import applicates/operators
-export operators

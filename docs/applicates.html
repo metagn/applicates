@@ -92,47 +92,9 @@ function main() {
   </div>
   <ul class="simple simple-toc" id="toc-list">
 <li>
-  <a class="reference reference-toplevel" href="#7" id="57">Types</a>
+  <a class="reference reference-toplevel" href="#6" id="56">Imports</a>
   <ul class="simple simple-toc-section">
-      <li><a class="reference" href="#Applicate"
-    title="Applicate = distinct int">Applicate</a></li>
-  <li><a class="reference" href="#ApplicateArg"
-    title="ApplicateArg = static Applicate">ApplicateArg</a></li>
-
-  </ul>
-</li>
-<li>
-  <a class="reference reference-toplevel" href="#8" id="58">Vars</a>
-  <ul class="simple simple-toc-section">
-      <li><a class="reference" href="#applicateCache"
-    title="applicateCache: seq[NimNode]">applicateCache</a></li>
-
-  </ul>
-</li>
-<li>
-  <a class="reference reference-toplevel" href="#12" id="62">Procs</a>
-  <ul class="simple simple-toc-section">
-      <ul class="simple nested-toc-section">insertApply
-      <li><a class="reference" href="#insertApply%2CNimNode"
-    title="insertApply(call: NimNode): NimNode">insertApply,<wbr>NimNode</a></li>
-
-  </ul>
-  <ul class="simple nested-toc-section">inferArity
-      <li><a class="reference" href="#inferArity%2CNimNode"
-    title="inferArity(sym: NimNode): int">inferArity,<wbr>NimNode</a></li>
-
-  </ul>
-  <ul class="simple nested-toc-section">pipeIntoCall
-      <li><a class="reference" href="#pipeIntoCall%2CNimNode%2CNimNode"
-    title="pipeIntoCall(value, call: NimNode): NimNode">pipeIntoCall,<wbr>NimNode,<wbr>NimNode</a></li>
-
-  </ul>
-  <ul class="simple nested-toc-section">node
-      <li><a class="reference" href="#node%2CApplicate"
-    title="node(appl: Applicate): NimNode">node,<wbr>Applicate</a></li>
-
-  </ul>
-
+    
   </ul>
 </li>
 <li>
@@ -154,41 +116,19 @@ function main() {
     title="toUntyped(sym: untyped; arity: static int): Applicate">toUntyped</a></li>
   <li><a class="reference" href="#toUntyped.m%2Ctyped"
     title="toUntyped(sym: typed): Applicate">toUntyped</a></li>
-  <li><a class="reference" href="#arity.m%2CApplicateArg"
-    title="arity(appl: ApplicateArg): static int">arity</a></li>
   <li><a class="reference" href="#instantiateAs.m%2CApplicateArg%2Cuntyped"
     title="instantiateAs(appl: ApplicateArg; name: untyped): untyped">instantiateAs</a></li>
   <li><a class="reference" href="#apply.m%2CApplicateArg%2Cvarargs%5Buntyped%5D"
     title="apply(appl: ApplicateArg; args: varargs[untyped]): untyped">apply</a></li>
   <li><a class="reference" href="#forceApply.m%2CApplicateArg%2Cvarargs%5Buntyped%5D"
     title="forceApply(appl: ApplicateArg; args: varargs[untyped]): untyped">forceApply</a></li>
-  <li><a class="reference" href="#%7C.m%2CApplicateArg%2Cuntyped"
-    title="`|`(appl: ApplicateArg; arg: untyped): untyped">`|`</a></li>
-  <li><a class="reference" href="#%5C.m%2Cuntyped"
-    title="`\`(call: untyped): untyped">`\`</a></li>
-  <li><a class="reference" href="#%7C%3E.m%2C%2C"
-    title="`|&gt;`(value, call): untyped">`|&gt;`</a></li>
-  <li><a class="reference" href="#chain.m%2C%2C"
-    title="chain(initial, calls): untyped">chain</a></li>
 
   </ul>
 </li>
 <li>
-  <a class="reference reference-toplevel" href="#18" id="68">Templates</a>
+  <a class="reference reference-toplevel" href="#19" id="69">Exports</a>
   <ul class="simple simple-toc-section">
-      <li><a class="reference" href="#%21%3D%3E.t%2C%2C"
-    title="`!=&gt;`(params, body): untyped">`!=&gt;`</a></li>
-  <li><a class="reference" href="#%21%3D%3E.t"
-    title="`!=&gt;`(body): untyped">`!=&gt;`</a></li>
-  <li><a class="reference" href="#%5C%3D%3E.t%2C%2C"
-    title="`\=&gt;`(params, body): untyped">`\=&gt;`</a></li>
-  <li><a class="reference" href="#%5C%3D%3E.t"
-    title="`\=&gt;`(body): untyped">`\=&gt;`</a></li>
-  <li><a class="reference" href="#%28%29.t%2CApplicateArg%2Cvarargs%5Buntyped%5D"
-    title="`()`(appl: ApplicateArg; args: varargs[untyped]): untyped">`()`</a></li>
-  <li><a class="reference" href="#%7C%3C.t%2Cuntyped%2CApplicateArg"
-    title="`|&lt;`(arg: untyped; appl: ApplicateArg): untyped">`|&lt;`</a></li>
-
+    
   </ul>
 </li>
 
@@ -199,102 +139,10 @@ function main() {
   <div id="tocRoot"></div>
   
   <p class="module-desc"></p>
-  <div class="section" id="7">
-<h1><a class="toc-backref" href="#7">Types</a></h1>
+  <div class="section" id="6">
+<h1><a class="toc-backref" href="#6">Imports</a></h1>
 <dl class="item">
-<a id="Applicate"></a>
-<dt><pre><a href="applicates.html#Applicate"><span class="Identifier">Applicate</span></a> <span class="Other">=</span> <span class="Keyword">distinct</span> <span class="Identifier">int</span></pre></dt>
-<dd>
-
-&quot;pointer to&quot; (index of) applicate AST. if you define <tt class="docutils literal"><span class="pre">applicatesCacheUseTable</span></tt> this will be a distinct string
-&nbsp;&nbsp;<a
-href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L9"
-class="link-seesrc" target="_blank">Source</a>
-<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L9" class="link-seesrc" target="_blank" >Edit</a>
-
-</dd>
-<a id="ApplicateArg"></a>
-<dt><pre><a href="applicates.html#ApplicateArg"><span class="Identifier">ApplicateArg</span></a> <span class="Other">=</span> <span class="Identifier">static</span> <span class="Identifier">Applicate</span></pre></dt>
-<dd>
-
-<tt class="docutils literal"><span class="pre">static Applicate</span></tt> to use for types of arguments
-&nbsp;&nbsp;<a
-href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L13"
-class="link-seesrc" target="_blank">Source</a>
-<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L13" class="link-seesrc" target="_blank" >Edit</a>
-
-</dd>
-
-</dl></div>
-<div class="section" id="8">
-<h1><a class="toc-backref" href="#8">Vars</a></h1>
-<dl class="item">
-<a id="applicateCache"></a>
-<dt><pre><a href="applicates.html#applicateCache"><span class="Identifier">applicateCache</span></a><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">NimNode</span><span class="Other">]</span></pre></dt>
-<dd>
-
-<p>the cache containing the routine definition nodes of each applicate. can be indexed by the ID of an applicate to receive its routine node, which is meant to be put in user code and invoked</p>
-<p>uses a compileTime seq by default, if you define <tt class="docutils literal"><span class="pre">applicatesUseMacroCache</span></tt> then it will use Nim's <tt class="docutils literal"><span class="pre">macrocache</span></tt> types, if you define <tt class="docutils literal"><span class="pre">applicatesCacheUseTable</span></tt> then it will use a <tt class="docutils literal"><span class="pre">CacheTable</span></tt> with unique strings</p>
-
-&nbsp;&nbsp;<a
-href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L27"
-class="link-seesrc" target="_blank">Source</a>
-<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L27" class="link-seesrc" target="_blank" >Edit</a>
-
-</dd>
-
-</dl></div>
-<div class="section" id="12">
-<h1><a class="toc-backref" href="#12">Procs</a></h1>
-<dl class="item">
-<a id="inferArity,NimNode"></a>
-<dt><pre><span class="Keyword">proc</span> <a href="#inferArity%2CNimNode"><span class="Identifier">inferArity</span></a><span class="Other">(</span><span class="Identifier">sym</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">int</span> <span><span class="Other">{</span><span class="Other pragmadots">...</span><span class="Other">}</span></span><span class="pragmawrap"><span class="Other">{.</span><span class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span><span class="Other">.}</span></span></pre></dt>
-<dd>
-
-infers arity of symbol<table frame="void"><tr><th align="left">-1 if sym is not a symbol, -2 if implementation</th><td align="left"></td>
-</tr>
-</table><p>of a symbol was nil, -3 if symbol choice arities do not match</p>
-
-&nbsp;&nbsp;<a
-href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L335"
-class="link-seesrc" target="_blank">Source</a>
-<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L335" class="link-seesrc" target="_blank" >Edit</a>
-
-</dd>
-<a id="node,Applicate"></a>
-<dt><pre><span class="Keyword">proc</span> <a href="#node%2CApplicate"><span class="Identifier">node</span></a><span class="Other">(</span><span class="Identifier">appl</span><span class="Other">:</span> <a href="applicates.html#Applicate"><span class="Identifier">Applicate</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span> <span><span class="Other">{</span><span class="Other pragmadots">...</span><span class="Other">}</span></span><span class="pragmawrap"><span class="Other">{.</span><span class="pragma"><span class="Identifier">compileTime</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span><span class="Other">.}</span></span></pre></dt>
-<dd>
-
-retrieves the node of the applicate from the cache
-&nbsp;&nbsp;<a
-href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L390"
-class="link-seesrc" target="_blank">Source</a>
-<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L390" class="link-seesrc" target="_blank" >Edit</a>
-
-</dd>
-<a id="insertApply,NimNode"></a>
-<dt><pre><span class="Keyword">proc</span> <a href="#insertApply%2CNimNode"><span class="Identifier">insertApply</span></a><span class="Other">(</span><span class="Identifier">call</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span> <span><span class="Other">{</span><span class="Other pragmadots">...</span><span class="Other">}</span></span><span class="pragmawrap"><span class="Other">{.</span><span class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span><span class="Other">.}</span></span></pre></dt>
-<dd>
-
-turns a regular call node into an <tt class="docutils literal"><span class="pre">apply</span></tt> call
-&nbsp;&nbsp;<a
-href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L534"
-class="link-seesrc" target="_blank">Source</a>
-<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L534" class="link-seesrc" target="_blank" >Edit</a>
-
-</dd>
-<a id="pipeIntoCall,NimNode,NimNode"></a>
-<dt><pre><span class="Keyword">proc</span> <a href="#pipeIntoCall%2CNimNode%2CNimNode"><span class="Identifier">pipeIntoCall</span></a><span class="Other">(</span><span class="Identifier">value</span><span class="Other">,</span> <span class="Identifier">call</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span> <span><span class="Other">{</span><span class="Other pragmadots">...</span><span class="Other">}</span></span><span class="pragmawrap"><span class="Other">{.</span><span class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span><span class="Other">.}</span></span></pre></dt>
-<dd>
-
-inserts value as first argument of <tt class="docutils literal"><span class="pre">call</span></tt>
-&nbsp;&nbsp;<a
-href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L568"
-class="link-seesrc" target="_blank">Source</a>
-<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L568" class="link-seesrc" target="_blank" >Edit</a>
-
-</dd>
-
+<a class="reference external" href="internals.html">internals</a>
 </dl></div>
 <div class="section" id="17">
 <h1><a class="toc-backref" href="#17">Macros</a></h1>
@@ -313,9 +161,9 @@ Registers given routine definitions as applicates and assigns each applicate to 
   </span><span class="Keyword">let</span><span class="Whitespace"> </span><span class="Identifier">x</span><span class="Whitespace"> </span><span class="Operator">=</span><span class="Whitespace"> </span><span class="StringLit">&quot;abc&quot;</span><span class="Whitespace">
   </span><span class="Identifier">doAssert</span><span class="Whitespace"> </span><span class="Identifier">foo</span><span class="Operator">.</span><span class="Identifier">apply</span><span class="Punctuation">(</span><span class="Punctuation">)</span><span class="Whitespace"> </span><span class="Operator">==</span><span class="Whitespace"> </span><span class="StringLit">&quot;abc&quot;</span></pre>
 &nbsp;&nbsp;<a
-href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L37"
+href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L6"
 class="link-seesrc" target="_blank">Source</a>
-<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L37" class="link-seesrc" target="_blank" >Edit</a>
+<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L6" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 <a id="makeApplicateFromTyped.m,typed"></a>
@@ -327,16 +175,18 @@ class="link-seesrc" target="_blank">Source</a>
 <p><strong>Note:</strong> This will generate an unused warning for the given routine, <tt class="docutils literal"><span class="pre">makeTypedApplicate</span></tt> automatically generates a <tt class="docutils literal"><span class="pre">used</span></tt> pragma but only on untyped routine expressions. </p>
 
 &nbsp;&nbsp;<a
-href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L87"
+href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L51"
 class="link-seesrc" target="_blank">Source</a>
-<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L87" class="link-seesrc" target="_blank" >Edit</a>
+<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L51" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 <a id="makeTypedApplicate.m,untyped"></a>
 <dt><pre><span class="Keyword">macro</span> <a href="#makeTypedApplicate.m%2Cuntyped"><span class="Identifier">makeTypedApplicate</span></a><span class="Other">(</span><span class="Identifier">body</span><span class="Other">:</span> <span class="Identifier">untyped</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">untyped</span></pre></dt>
 <dd>
 
-Injects <tt class="docutils literal"><span class="pre">used</span></tt> pragma into <tt class="docutils literal"><span class="pre">body</span></tt> and calls <tt class="docutils literal"><span class="pre">makeApplicateFromTyped</span></tt>.
+<p>Calls <tt class="docutils literal"><span class="pre">makeApplicateFromTyped</span></tt> without giving an unused warning.</p>
+<p>Accomplishes this by injecting {.used.}.</p>
+
 <p><strong class="examples_text">Example:</strong></p>
 <pre class="listing"><span class="Identifier">makeTypedApplicate</span><span class="Punctuation">:</span><span class="Whitespace">
   </span><span class="Keyword">template</span><span class="Whitespace"> </span><span class="Identifier">useIt</span><span class="Whitespace"> </span><span class="Operator">=</span><span class="Whitespace">
@@ -347,9 +197,9 @@ Injects <tt class="docutils literal"><span class="pre">used</span></tt> pragma i
   </span><span class="Keyword">let</span><span class="Whitespace"> </span><span class="Identifier">it</span><span class="Whitespace"> </span><span class="Operator">=</span><span class="Whitespace"> </span><span class="Identifier">realIt</span><span class="Whitespace">
   </span><span class="Identifier">useIt</span><span class="Operator">.</span><span class="Identifier">apply</span><span class="Punctuation">(</span><span class="Punctuation">)</span></pre>
 &nbsp;&nbsp;<a
-href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L108"
+href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L72"
 class="link-seesrc" target="_blank">Source</a>
-<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L108" class="link-seesrc" target="_blank" >Edit</a>
+<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L72" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 <a id="applicate.m,,"></a>
@@ -358,6 +208,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 <p>generates a template based on the params and body and registers it as a typed applicate. when anonymous, returns applicate id literal (compatible with ApplicateArg/Applicate). when a name is specified (using call/object constructor syntax), defines that name as a constant with the value being the applicate id.</p>
 <p>param syntax: <tt class="docutils literal"><span class="pre">p: T</span></tt>, or <tt class="docutils literal"><span class="pre">p is T</span></tt> if Nim doesn't like colons, and <tt class="docutils literal"><span class="pre">paramList -&gt; T</span></tt> for return type or <tt class="docutils literal"><span class="pre">paramsList: T</span></tt> for return type if <tt class="docutils literal"><span class="pre">paramsList</span></tt> is in parentheses. type annotations that are grouped together like <tt class="docutils literal"><span class="pre">a, b: int</span></tt> resolve to <tt class="docutils literal"><span class="pre">a: int, b: int</span></tt>.</p>
+<p>the param syntax might be removed in the future given that <tt class="docutils literal"><span class="pre">do</span></tt> directly replicates regular routine parameters</p>
 <p>note: the return type is untyped by default unlike templates, where it is void</p>
 
 <p><strong class="examples_text">Example:</strong></p>
@@ -382,9 +233,9 @@ class="link-seesrc" target="_blank">Source</a>
       </span><span class="Identifier">double</span><span class="Whitespace"> </span><span class="Identifier">applicate</span><span class="Punctuation">(</span><span class="Identifier">inc</span><span class="Punctuation">(</span><span class="Identifier">c</span><span class="Punctuation">)</span><span class="Punctuation">)</span><span class="Punctuation">)</span><span class="Punctuation">)</span><span class="Whitespace">
 </span><span class="Identifier">doAssert</span><span class="Whitespace"> </span><span class="Identifier">c</span><span class="Whitespace"> </span><span class="Operator">==</span><span class="Whitespace"> </span><span class="DecNumber">8</span></pre>
 &nbsp;&nbsp;<a
-href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L133"
+href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L99"
 class="link-seesrc" target="_blank">Source</a>
-<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L133" class="link-seesrc" target="_blank" >Edit</a>
+<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L99" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 <a id="applicate.m"></a>
@@ -411,27 +262,27 @@ syntax for applicates with no parameters, or for applicates made with <tt class=
 </span><span class="Comment"># named.apply(upperA, char, 65)</span><span class="Whitespace">
 </span><span class="Comment"># doAssert upperA == &apos;A&apos;</span></pre>
 &nbsp;&nbsp;<a
-href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L244"
+href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L213"
 class="link-seesrc" target="_blank">Source</a>
-<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L244" class="link-seesrc" target="_blank" >Edit</a>
+<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L213" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 <a id="fromSymbol.m,untyped"></a>
-<dt><pre><span class="Keyword">macro</span> <a href="#fromSymbol.m%2Cuntyped"><span class="Identifier">fromSymbol</span></a><span class="Other">(</span><span class="Identifier">sym</span><span class="Other">:</span> <span class="Identifier">untyped</span><span class="Other">)</span><span class="Other">:</span> <a href="applicates.html#Applicate"><span class="Identifier">Applicate</span></a></pre></dt>
+<dt><pre><span class="Keyword">macro</span> <a href="#fromSymbol.m%2Cuntyped"><span class="Identifier">fromSymbol</span></a><span class="Other">(</span><span class="Identifier">sym</span><span class="Other">:</span> <span class="Identifier">untyped</span><span class="Other">)</span><span class="Other">:</span> <a href="internals.html#Applicate"><span class="Identifier">Applicate</span></a></pre></dt>
 <dd>
 
-directly registers <tt class="docutils literal"><span class="pre">sym</span></tt> as an applicate node. might be more efficient than <tt class="docutils literal"><span class="pre">toUntyped</span></tt> for most cases, and hopefully shouldn't have to care about arity
+directly registers <tt class="docutils literal"><span class="pre">sym</span></tt> as an applicate node. might be more efficient than <tt class="docutils literal"><span class="pre">toUntyped</span></tt> for most cases, and accepts varying arities
 <p><strong class="examples_text">Example:</strong></p>
 <pre class="listing"><span class="Keyword">const</span><span class="Whitespace"> </span><span class="Identifier">plus</span><span class="Whitespace"> </span><span class="Operator">=</span><span class="Whitespace"> </span><span class="Identifier">fromSymbol</span><span class="Punctuation">(</span><span class="Punctuation">`</span><span class="Operator">+</span><span class="Punctuation">`</span><span class="Punctuation">)</span><span class="Whitespace">
 </span><span class="Identifier">doAssert</span><span class="Whitespace"> </span><span class="Identifier">plus</span><span class="Operator">.</span><span class="Identifier">apply</span><span class="Punctuation">(</span><span class="DecNumber">1</span><span class="Punctuation">,</span><span class="Whitespace"> </span><span class="DecNumber">2</span><span class="Punctuation">)</span><span class="Whitespace"> </span><span class="Operator">==</span><span class="Whitespace"> </span><span class="DecNumber">3</span></pre>
 &nbsp;&nbsp;<a
-href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L306"
+href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L251"
 class="link-seesrc" target="_blank">Source</a>
-<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L306" class="link-seesrc" target="_blank" >Edit</a>
+<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L251" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 <a id="toUntyped.m,untyped,staticint"></a>
-<dt><pre><span class="Keyword">macro</span> <a href="#toUntyped.m%2Cuntyped%2Cstaticint"><span class="Identifier">toUntyped</span></a><span class="Other">(</span><span class="Identifier">sym</span><span class="Other">:</span> <span class="Identifier">untyped</span><span class="Other">;</span> <span class="Identifier">arity</span><span class="Other">:</span> <span class="Identifier">static</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">:</span> <a href="applicates.html#Applicate"><span class="Identifier">Applicate</span></a></pre></dt>
+<dt><pre><span class="Keyword">macro</span> <a href="#toUntyped.m%2Cuntyped%2Cstaticint"><span class="Identifier">toUntyped</span></a><span class="Other">(</span><span class="Identifier">sym</span><span class="Other">:</span> <span class="Identifier">untyped</span><span class="Other">;</span> <span class="Identifier">arity</span><span class="Other">:</span> <span class="Identifier">static</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">:</span> <a href="internals.html#Applicate"><span class="Identifier">Applicate</span></a></pre></dt>
 <dd>
 
 creates an applicate with <tt class="docutils literal"><span class="pre">n</span></tt> = <tt class="docutils literal"><span class="pre">arity</span></tt> untyped parameters that calls the given symbol <tt class="docutils literal"><span class="pre">sym</span></tt>
@@ -439,13 +290,13 @@ creates an applicate with <tt class="docutils literal"><span class="pre">n</span
 <pre class="listing"><span class="Keyword">const</span><span class="Whitespace"> </span><span class="Identifier">adder</span><span class="Whitespace"> </span><span class="Operator">=</span><span class="Whitespace"> </span><span class="Identifier">toUntyped</span><span class="Punctuation">(</span><span class="Punctuation">`</span><span class="Operator">+</span><span class="Punctuation">`</span><span class="Punctuation">,</span><span class="Whitespace"> </span><span class="DecNumber">2</span><span class="Punctuation">)</span><span class="Whitespace">
 </span><span class="Identifier">doAssert</span><span class="Whitespace"> </span><span class="Identifier">adder</span><span class="Operator">.</span><span class="Identifier">apply</span><span class="Punctuation">(</span><span class="DecNumber">1</span><span class="Punctuation">,</span><span class="Whitespace"> </span><span class="DecNumber">2</span><span class="Punctuation">)</span><span class="Whitespace"> </span><span class="Operator">==</span><span class="Whitespace"> </span><span class="DecNumber">3</span></pre>
 &nbsp;&nbsp;<a
-href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L321"
+href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L260"
 class="link-seesrc" target="_blank">Source</a>
-<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L321" class="link-seesrc" target="_blank" >Edit</a>
+<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L260" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 <a id="toUntyped.m,typed"></a>
-<dt><pre><span class="Keyword">macro</span> <a href="#toUntyped.m%2Ctyped"><span class="Identifier">toUntyped</span></a><span class="Other">(</span><span class="Identifier">sym</span><span class="Other">:</span> <span class="Identifier">typed</span><span class="Other">)</span><span class="Other">:</span> <a href="applicates.html#Applicate"><span class="Identifier">Applicate</span></a></pre></dt>
+<dt><pre><span class="Keyword">macro</span> <a href="#toUntyped.m%2Ctyped"><span class="Identifier">toUntyped</span></a><span class="Other">(</span><span class="Identifier">sym</span><span class="Other">:</span> <span class="Identifier">typed</span><span class="Other">)</span><span class="Other">:</span> <a href="internals.html#Applicate"><span class="Identifier">Applicate</span></a></pre></dt>
 <dd>
 
 <p>infers the arity of <tt class="docutils literal"><span class="pre">sym</span></tt> from its symbol then calls <tt class="docutils literal"><span class="pre">toUntyped(sym, arity)</span></tt></p>
@@ -461,35 +312,20 @@ class="link-seesrc" target="_blank">Source</a>
 </span><span class="Identifier">doAssert</span><span class="Whitespace"> </span><span class="Identifier">leq</span><span class="Operator">.</span><span class="Identifier">apply</span><span class="Punctuation">(</span><span class="DecNumber">1</span><span class="Punctuation">,</span><span class="Whitespace"> </span><span class="DecNumber">2</span><span class="Punctuation">)</span><span class="Whitespace">
 </span><span class="Identifier">doAssert</span><span class="Whitespace"> </span><span class="Identifier">leq</span><span class="Operator">.</span><span class="Identifier">apply</span><span class="Punctuation">(</span><span class="FloatNumber">2.0</span><span class="Punctuation">,</span><span class="Whitespace"> </span><span class="FloatNumber">2.0</span><span class="Punctuation">)</span></pre>
 &nbsp;&nbsp;<a
-href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L364"
+href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L274"
 class="link-seesrc" target="_blank">Source</a>
-<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L364" class="link-seesrc" target="_blank" >Edit</a>
-
-</dd>
-<a id="arity.m,ApplicateArg"></a>
-<dt><pre><span class="Keyword">macro</span> <a href="#arity.m%2CApplicateArg"><span class="Identifier">arity</span></a><span class="Other">(</span><span class="Identifier">appl</span><span class="Other">:</span> <a href="applicates.html#ApplicateArg"><span class="Identifier">ApplicateArg</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">static</span> <span class="Identifier">int</span></pre></dt>
-<dd>
-
-gets arity of applicate. check <tt class="docutils literal"><span class="pre">inferArity</span></tt> for meaning of negative values
-<p><strong class="examples_text">Example:</strong></p>
-<pre class="listing"><span class="Identifier">doAssert</span><span class="Whitespace"> </span><span class="Identifier">arity</span><span class="Punctuation">(</span><span class="Punctuation">(</span><span class="Identifier">x</span><span class="Punctuation">,</span><span class="Whitespace"> </span><span class="Identifier">y</span><span class="Punctuation">)</span><span class="Whitespace"> </span><span class="Operator">!=&gt;</span><span class="Whitespace"> </span><span class="Identifier">x</span><span class="Whitespace"> </span><span class="Operator">+</span><span class="Whitespace"> </span><span class="Identifier">y</span><span class="Punctuation">)</span><span class="Whitespace"> </span><span class="Operator">==</span><span class="Whitespace"> </span><span class="DecNumber">2</span><span class="Whitespace">
-</span><span class="Identifier">doAssert</span><span class="Whitespace"> </span><span class="Identifier">arity</span><span class="Punctuation">(</span><span class="Identifier">a</span><span class="Whitespace"> </span><span class="Operator">!=&gt;</span><span class="Whitespace"> </span><span class="Identifier">a</span><span class="Punctuation">)</span><span class="Whitespace"> </span><span class="Operator">==</span><span class="Whitespace"> </span><span class="DecNumber">1</span><span class="Whitespace">
-</span><span class="Identifier">doAssert</span><span class="Whitespace"> </span><span class="Identifier">arity</span><span class="Punctuation">(</span><span class="Operator">!=&gt;</span><span class="Whitespace"> </span><span class="DecNumber">3</span><span class="Punctuation">)</span><span class="Whitespace"> </span><span class="Operator">==</span><span class="Whitespace"> </span><span class="DecNumber">0</span></pre>
-&nbsp;&nbsp;<a
-href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L394"
-class="link-seesrc" target="_blank">Source</a>
-<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L394" class="link-seesrc" target="_blank" >Edit</a>
+<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L274" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 <a id="instantiateAs.m,ApplicateArg,untyped"></a>
-<dt><pre><span class="Keyword">macro</span> <a href="#instantiateAs.m%2CApplicateArg%2Cuntyped"><span class="Identifier">instantiateAs</span></a><span class="Other">(</span><span class="Identifier">appl</span><span class="Other">:</span> <a href="applicates.html#ApplicateArg"><span class="Identifier">ApplicateArg</span></a><span class="Other">;</span> <span class="Identifier">name</span><span class="Other">:</span> <span class="Identifier">untyped</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">untyped</span></pre></dt>
+<dt><pre><span class="Keyword">macro</span> <a href="#instantiateAs.m%2CApplicateArg%2Cuntyped"><span class="Identifier">instantiateAs</span></a><span class="Other">(</span><span class="Identifier">appl</span><span class="Other">:</span> <a href="internals.html#ApplicateArg"><span class="Identifier">ApplicateArg</span></a><span class="Other">;</span> <span class="Identifier">name</span><span class="Other">:</span> <span class="Identifier">untyped</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">untyped</span></pre></dt>
 <dd>
 
 <p>instantiates the applicate in the scope with the given name</p>
 <p>helps where <tt class="docutils literal"><span class="pre">apply</span></tt> syntax isn't enough (for example generics and overloading)</p>
 
 <p><strong class="examples_text">Example:</strong></p>
-<pre class="listing"><span class="Identifier">instantiateAs</span><span class="Punctuation">(</span><span class="Identifier">x</span><span class="Whitespace"> </span><span class="Operator">!=&gt;</span><span class="Whitespace"> </span><span class="Identifier">x</span><span class="Whitespace"> </span><span class="Operator">+</span><span class="Whitespace"> </span><span class="DecNumber">1</span><span class="Punctuation">,</span><span class="Whitespace"> </span><span class="Identifier">incr</span><span class="Punctuation">)</span><span class="Whitespace">
+<pre class="listing"><span class="Identifier">instantiateAs</span><span class="Punctuation">(</span><span class="Identifier">fromSymbol</span><span class="Punctuation">(</span><span class="Identifier">system</span><span class="Operator">.</span><span class="Identifier">succ</span><span class="Punctuation">)</span><span class="Punctuation">,</span><span class="Whitespace"> </span><span class="Identifier">incr</span><span class="Punctuation">)</span><span class="Whitespace">
 </span><span class="Identifier">doAssert</span><span class="Whitespace"> </span><span class="Identifier">incr</span><span class="Punctuation">(</span><span class="DecNumber">1</span><span class="Punctuation">)</span><span class="Whitespace"> </span><span class="Operator">==</span><span class="Whitespace"> </span><span class="DecNumber">2</span><span class="Whitespace">
 </span><span class="Keyword">proc</span><span class="Whitespace"> </span><span class="Identifier">foo</span><span class="Punctuation">[</span><span class="Identifier">T</span><span class="Punctuation">]</span><span class="Punctuation">(</span><span class="Identifier">x</span><span class="Punctuation">,</span><span class="Whitespace"> </span><span class="Identifier">y</span><span class="Punctuation">:</span><span class="Whitespace"> </span><span class="Identifier">T</span><span class="Punctuation">)</span><span class="Punctuation">:</span><span class="Whitespace"> </span><span class="Identifier">T</span><span class="Whitespace"> </span><span class="Punctuation">{</span><span class="Operator">.</span><span class="Identifier">makeApplicate</span><span class="Operator">.</span><span class="Punctuation">}</span><span class="Whitespace"> </span><span class="Operator">=</span><span class="Whitespace"> </span><span class="Identifier">x</span><span class="Whitespace"> </span><span class="Operator">+</span><span class="Whitespace"> </span><span class="Identifier">y</span><span class="Whitespace">
 </span><span class="Keyword">proc</span><span class="Whitespace"> </span><span class="Identifier">bar</span><span class="Punctuation">(</span><span class="Identifier">x</span><span class="Punctuation">,</span><span class="Whitespace"> </span><span class="Identifier">y</span><span class="Punctuation">:</span><span class="Whitespace"> </span><span class="Identifier">string</span><span class="Punctuation">)</span><span class="Punctuation">:</span><span class="Whitespace"> </span><span class="Identifier">string</span><span class="Whitespace"> </span><span class="Punctuation">{</span><span class="Operator">.</span><span class="Identifier">makeApplicate</span><span class="Operator">.</span><span class="Punctuation">}</span><span class="Whitespace"> </span><span class="Operator">=</span><span class="Whitespace"> </span><span class="Identifier">x</span><span class="Whitespace"> </span><span class="Operator">&amp;</span><span class="Whitespace"> </span><span class="Identifier">y</span><span class="Whitespace">
@@ -504,205 +340,44 @@ class="link-seesrc" target="_blank">Source</a>
 </span><span class="Identifier">doAssert</span><span class="Whitespace"> </span><span class="Identifier">minus</span><span class="Punctuation">(</span><span class="DecNumber">4</span><span class="Punctuation">)</span><span class="Whitespace"> </span><span class="Operator">==</span><span class="Whitespace"> </span><span class="Operator">-</span><span class="DecNumber">4</span><span class="Whitespace">
 </span><span class="Identifier">doAssert</span><span class="Whitespace"> </span><span class="Identifier">minus</span><span class="Punctuation">(</span><span class="DecNumber">5</span><span class="Punctuation">,</span><span class="Whitespace"> </span><span class="DecNumber">2</span><span class="Punctuation">)</span><span class="Whitespace"> </span><span class="Operator">==</span><span class="Whitespace"> </span><span class="DecNumber">3</span></pre>
 &nbsp;&nbsp;<a
-href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L412"
+href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L300"
 class="link-seesrc" target="_blank">Source</a>
-<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L412" class="link-seesrc" target="_blank" >Edit</a>
+<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L300" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 <a id="apply.m,ApplicateArg,varargs[untyped]"></a>
-<dt><pre><span class="Keyword">macro</span> <a href="#apply.m%2CApplicateArg%2Cvarargs%5Buntyped%5D"><span class="Identifier">apply</span></a><span class="Other">(</span><span class="Identifier">appl</span><span class="Other">:</span> <a href="applicates.html#ApplicateArg"><span class="Identifier">ApplicateArg</span></a><span class="Other">;</span> <span class="Identifier">args</span><span class="Other">:</span> <span class="Identifier">varargs</span><span class="Other">[</span><span class="Identifier">untyped</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">untyped</span></pre></dt>
+<dt><pre><span class="Keyword">macro</span> <a href="#apply.m%2CApplicateArg%2Cvarargs%5Buntyped%5D"><span class="Identifier">apply</span></a><span class="Other">(</span><span class="Identifier">appl</span><span class="Other">:</span> <a href="internals.html#ApplicateArg"><span class="Identifier">ApplicateArg</span></a><span class="Other">;</span> <span class="Identifier">args</span><span class="Other">:</span> <span class="Identifier">varargs</span><span class="Other">[</span><span class="Identifier">untyped</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">untyped</span></pre></dt>
 <dd>
 
 applies the applicate by injecting the applicate routine (if not in scope already) then calling it with the given arguments
 <p><strong class="examples_text">Example:</strong></p>
-<pre class="listing"><span class="Keyword">const</span><span class="Whitespace"> </span><span class="Identifier">incr</span><span class="Whitespace"> </span><span class="Operator">=</span><span class="Whitespace"> </span><span class="Identifier">x</span><span class="Whitespace"> </span><span class="Operator">!=&gt;</span><span class="Whitespace"> </span><span class="Identifier">x</span><span class="Whitespace"> </span><span class="Operator">+</span><span class="Whitespace"> </span><span class="DecNumber">1</span><span class="Whitespace">
+<pre class="listing"><span class="Keyword">const</span><span class="Whitespace"> </span><span class="Identifier">incr</span><span class="Whitespace"> </span><span class="Operator">=</span><span class="Whitespace"> </span><span class="Identifier">fromSymbol</span><span class="Punctuation">(</span><span class="Identifier">system</span><span class="Operator">.</span><span class="Identifier">succ</span><span class="Punctuation">)</span><span class="Whitespace">
 </span><span class="Identifier">doAssert</span><span class="Whitespace"> </span><span class="Identifier">incr</span><span class="Operator">.</span><span class="Identifier">apply</span><span class="Punctuation">(</span><span class="DecNumber">1</span><span class="Punctuation">)</span><span class="Whitespace"> </span><span class="Operator">==</span><span class="Whitespace"> </span><span class="DecNumber">2</span></pre>
 &nbsp;&nbsp;<a
-href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L451"
+href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L339"
 class="link-seesrc" target="_blank">Source</a>
-<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L451" class="link-seesrc" target="_blank" >Edit</a>
+<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L339" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 <a id="forceApply.m,ApplicateArg,varargs[untyped]"></a>
-<dt><pre><span class="Keyword">macro</span> <a href="#forceApply.m%2CApplicateArg%2Cvarargs%5Buntyped%5D"><span class="Identifier">forceApply</span></a><span class="Other">(</span><span class="Identifier">appl</span><span class="Other">:</span> <a href="applicates.html#ApplicateArg"><span class="Identifier">ApplicateArg</span></a><span class="Other">;</span> <span class="Identifier">args</span><span class="Other">:</span> <span class="Identifier">varargs</span><span class="Other">[</span><span class="Identifier">untyped</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">untyped</span></pre></dt>
+<dt><pre><span class="Keyword">macro</span> <a href="#forceApply.m%2CApplicateArg%2Cvarargs%5Buntyped%5D"><span class="Identifier">forceApply</span></a><span class="Other">(</span><span class="Identifier">appl</span><span class="Other">:</span> <a href="internals.html#ApplicateArg"><span class="Identifier">ApplicateArg</span></a><span class="Other">;</span> <span class="Identifier">args</span><span class="Other">:</span> <span class="Identifier">varargs</span><span class="Other">[</span><span class="Identifier">untyped</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">untyped</span></pre></dt>
 <dd>
 
 <p>applies the applicate by injecting the applicate routine, even if already in scope, then calling it with the given arguments</p>
 <p>realistically, the applicate routine is never in scope, but if you really come across a case where it is then you can use this</p>
 
 &nbsp;&nbsp;<a
-href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L477"
+href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L363"
 class="link-seesrc" target="_blank">Source</a>
-<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L477" class="link-seesrc" target="_blank" >Edit</a>
-
-</dd>
-<a id="|.m,ApplicateArg,untyped"></a>
-<dt><pre><span class="Keyword">macro</span> <a href="#%7C.m%2CApplicateArg%2Cuntyped"><span class="Identifier">`|`</span></a><span class="Other">(</span><span class="Identifier">appl</span><span class="Other">:</span> <a href="applicates.html#ApplicateArg"><span class="Identifier">ApplicateArg</span></a><span class="Other">;</span> <span class="Identifier">arg</span><span class="Other">:</span> <span class="Identifier">untyped</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">untyped</span></pre></dt>
-<dd>
-
-<p>attempted operator syntax for <tt class="docutils literal"><span class="pre">apply</span></tt>. if <tt class="docutils literal"><span class="pre">arg</span></tt> is in parentheses then its arguments are broken up, otherwise it is passed as a single argument</p>
-<p>note that you can undefine operators you don't want via <tt class="docutils literal"><span class="pre">import except</span></tt></p>
-
-<p><strong class="examples_text">Example:</strong></p>
-<pre class="listing"><span class="Identifier">doAssert</span><span class="Whitespace"> </span><span class="Punctuation">(</span><span class="Identifier">x</span><span class="Whitespace"> </span><span class="Operator">!=&gt;</span><span class="Whitespace"> </span><span class="Identifier">x</span><span class="Whitespace"> </span><span class="Operator">+</span><span class="Whitespace"> </span><span class="DecNumber">1</span><span class="Punctuation">)</span><span class="Whitespace"> </span><span class="Operator">|</span><span class="Whitespace"> </span><span class="DecNumber">1</span><span class="Whitespace"> </span><span class="Operator">==</span><span class="Whitespace"> </span><span class="DecNumber">2</span><span class="Whitespace">
-</span><span class="Keyword">const</span><span class="Whitespace"> </span><span class="Identifier">foo</span><span class="Whitespace"> </span><span class="Operator">=</span><span class="Whitespace"> </span><span class="Identifier">x</span><span class="Whitespace"> </span><span class="Operator">!=&gt;</span><span class="Whitespace"> </span><span class="Identifier">x</span><span class="Whitespace"> </span><span class="Operator">+</span><span class="Whitespace"> </span><span class="DecNumber">1</span><span class="Whitespace">
-</span><span class="Identifier">doAssert</span><span class="Whitespace"> </span><span class="Identifier">foo</span><span class="Whitespace"> </span><span class="Operator">|</span><span class="Whitespace"> </span><span class="DecNumber">1</span><span class="Whitespace"> </span><span class="Operator">==</span><span class="Whitespace"> </span><span class="DecNumber">2</span><span class="Whitespace">
-</span><span class="Identifier">doAssert</span><span class="Whitespace"> </span><span class="Punctuation">(</span><span class="Punctuation">(</span><span class="Identifier">a</span><span class="Punctuation">,</span><span class="Whitespace"> </span><span class="Identifier">b</span><span class="Punctuation">)</span><span class="Whitespace"> </span><span class="Operator">!=&gt;</span><span class="Whitespace"> </span><span class="Identifier">a</span><span class="Whitespace"> </span><span class="Operator">+</span><span class="Whitespace"> </span><span class="Identifier">b</span><span class="Punctuation">)</span><span class="Whitespace"> </span><span class="Operator">|</span><span class="Whitespace"> </span><span class="Punctuation">(</span><span class="DecNumber">1</span><span class="Punctuation">,</span><span class="Whitespace"> </span><span class="DecNumber">2</span><span class="Punctuation">)</span><span class="Whitespace"> </span><span class="Operator">==</span><span class="Whitespace"> </span><span class="DecNumber">3</span></pre>
-&nbsp;&nbsp;<a
-href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L514"
-class="link-seesrc" target="_blank">Source</a>
-<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L514" class="link-seesrc" target="_blank" >Edit</a>
-
-</dd>
-<a id="\.m,untyped"></a>
-<dt><pre><span class="Keyword">macro</span> <a href="#%5C.m%2Cuntyped"><span class="Identifier">`\`</span></a><span class="Other">(</span><span class="Identifier">call</span><span class="Other">:</span> <span class="Identifier">untyped</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">untyped</span></pre></dt>
-<dd>
-
-<p>converts a call expression to an applicate call expression</p>
-<p>supports dot calls, if the given expression is not a dot expression or call or command then it will simply apply it with no arguments</p>
-
-<p><strong class="examples_text">Example:</strong></p>
-<pre class="listing"><span class="Keyword">const</span><span class="Whitespace"> </span><span class="Identifier">foo</span><span class="Whitespace"> </span><span class="Operator">=</span><span class="Whitespace"> </span><span class="Identifier">x</span><span class="Whitespace"> </span><span class="Operator">!=&gt;</span><span class="Whitespace"> </span><span class="Identifier">x</span><span class="Whitespace"> </span><span class="Operator">+</span><span class="Whitespace"> </span><span class="DecNumber">1</span><span class="Whitespace">
-</span><span class="Identifier">doAssert</span><span class="Whitespace"> </span><span class="Operator">\</span><span class="Identifier">foo</span><span class="Punctuation">(</span><span class="DecNumber">1</span><span class="Punctuation">)</span><span class="Whitespace"> </span><span class="Operator">==</span><span class="Whitespace"> </span><span class="DecNumber">2</span><span class="Whitespace">
-</span><span class="Identifier">doAssert</span><span class="Whitespace"> </span><span class="Operator">\</span><span class="FloatNumber">1.</span><span class="Identifier">foo</span><span class="Whitespace"> </span><span class="Operator">==</span><span class="Whitespace"> </span><span class="DecNumber">2</span><span class="Whitespace">
-</span><span class="Keyword">const</span><span class="Whitespace"> </span><span class="Identifier">bar</span><span class="Whitespace"> </span><span class="Operator">=</span><span class="Whitespace"> </span><span class="Punctuation">(</span><span class="Identifier">a</span><span class="Punctuation">,</span><span class="Whitespace"> </span><span class="Identifier">b</span><span class="Punctuation">)</span><span class="Whitespace"> </span><span class="Operator">!=&gt;</span><span class="Whitespace"> </span><span class="Identifier">a</span><span class="Whitespace"> </span><span class="Operator">+</span><span class="Whitespace"> </span><span class="Identifier">b</span><span class="Whitespace">
-</span><span class="Identifier">doAssert</span><span class="Whitespace"> </span><span class="Operator">\</span><span class="Identifier">bar</span><span class="Punctuation">(</span><span class="DecNumber">1</span><span class="Punctuation">,</span><span class="Whitespace"> </span><span class="DecNumber">2</span><span class="Punctuation">)</span><span class="Whitespace"> </span><span class="Operator">==</span><span class="Whitespace"> </span><span class="DecNumber">3</span><span class="Whitespace">
-</span><span class="Identifier">doAssert</span><span class="Whitespace"> </span><span class="Operator">\</span><span class="FloatNumber">1.</span><span class="Identifier">bar</span><span class="Punctuation">(</span><span class="DecNumber">2</span><span class="Punctuation">)</span><span class="Whitespace"> </span><span class="Operator">==</span><span class="Whitespace"> </span><span class="DecNumber">3</span><span class="Whitespace">
-</span><span class="Keyword">const</span><span class="Whitespace"> </span><span class="Identifier">baz</span><span class="Whitespace"> </span><span class="Operator">=</span><span class="Whitespace"> </span><span class="Operator">!=&gt;</span><span class="Whitespace"> </span><span class="DecNumber">10</span><span class="Whitespace">
-</span><span class="Identifier">doAssert</span><span class="Whitespace"> </span><span class="Operator">\</span><span class="Identifier">baz</span><span class="Punctuation">(</span><span class="Punctuation">)</span><span class="Whitespace"> </span><span class="Operator">==</span><span class="Whitespace"> </span><span class="DecNumber">10</span><span class="Whitespace">
-</span><span class="Identifier">doAssert</span><span class="Whitespace"> </span><span class="Operator">\</span><span class="Identifier">baz</span><span class="Whitespace"> </span><span class="Operator">==</span><span class="Whitespace"> </span><span class="DecNumber">10</span></pre>
-&nbsp;&nbsp;<a
-href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L551"
-class="link-seesrc" target="_blank">Source</a>
-<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L551" class="link-seesrc" target="_blank" >Edit</a>
-
-</dd>
-<a id="|>.m,,"></a>
-<dt><pre><span class="Keyword">macro</span> <a href="#%7C%3E.m%2C%2C"><span class="Identifier">`|&gt;`</span></a><span class="Other">(</span><span class="Identifier">value</span><span class="Other">,</span> <span class="Identifier">call</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">untyped</span></pre></dt>
-<dd>
-
-<p>inserts value as first argument of call, and converts it to applicate call expression</p>
-<p>if call is a dot call, it is not modified, so value becomes the second argument in the call</p>
-
-<p><strong class="examples_text">Example:</strong></p>
-<pre class="listing"><span class="Keyword">const</span><span class="Whitespace"> </span><span class="Identifier">incr</span><span class="Whitespace"> </span><span class="Operator">=</span><span class="Whitespace"> </span><span class="Identifier">fromSymbol</span><span class="Punctuation">(</span><span class="Identifier">system</span><span class="Operator">.</span><span class="Identifier">succ</span><span class="Punctuation">)</span><span class="Whitespace">
-</span><span class="Keyword">const</span><span class="Whitespace"> </span><span class="Identifier">multiply</span><span class="Whitespace"> </span><span class="Operator">=</span><span class="Whitespace"> </span><span class="Identifier">fromSymbol</span><span class="Punctuation">(</span><span class="Punctuation">`</span><span class="Operator">*</span><span class="Punctuation">`</span><span class="Punctuation">)</span><span class="Whitespace">
-</span><span class="Keyword">const</span><span class="Whitespace"> </span><span class="Identifier">divide</span><span class="Whitespace"> </span><span class="Operator">=</span><span class="Whitespace"> </span><span class="Identifier">fromSymbol</span><span class="Punctuation">(</span><span class="Punctuation">`</span><span class="Operator">/</span><span class="Punctuation">`</span><span class="Punctuation">)</span><span class="Whitespace">
-
-</span><span class="Keyword">let</span><span class="Whitespace"> </span><span class="Identifier">foo</span><span class="Whitespace"> </span><span class="Operator">=</span><span class="Whitespace"> </span><span class="DecNumber">3</span><span class="Whitespace"> </span><span class="Operator">|&gt;</span><span class="Whitespace">
-  </span><span class="Identifier">multiply</span><span class="Punctuation">(</span><span class="DecNumber">2</span><span class="Punctuation">)</span><span class="Whitespace"> </span><span class="Operator">|&gt;</span><span class="Whitespace">
-  </span><span class="Identifier">incr</span><span class="Whitespace"> </span><span class="Operator">|&gt;</span><span class="Whitespace">
-  </span><span class="FloatNumber">14.</span><span class="Identifier">divide</span><span class="Whitespace">
-</span><span class="Identifier">doAssert</span><span class="Whitespace"> </span><span class="Identifier">foo</span><span class="Whitespace"> </span><span class="Operator">==</span><span class="Whitespace"> </span><span class="DecNumber">2</span></pre>
-&nbsp;&nbsp;<a
-href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L577"
-class="link-seesrc" target="_blank">Source</a>
-<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L577" class="link-seesrc" target="_blank" >Edit</a>
-
-</dd>
-<a id="chain.m,,"></a>
-<dt><pre><span class="Keyword">macro</span> <a href="#chain.m%2C%2C"><span class="Identifier">chain</span></a><span class="Other">(</span><span class="Identifier">initial</span><span class="Other">,</span> <span class="Identifier">calls</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">untyped</span></pre></dt>
-<dd>
-
-statement list chained version of <tt class="docutils literal"><span class="pre">|&gt;</span></tt>
-<p><strong class="examples_text">Example:</strong></p>
-<pre class="listing"><span class="Keyword">const</span><span class="Whitespace"> </span><span class="Identifier">incr</span><span class="Whitespace"> </span><span class="Operator">=</span><span class="Whitespace"> </span><span class="Identifier">fromSymbol</span><span class="Punctuation">(</span><span class="Identifier">system</span><span class="Operator">.</span><span class="Identifier">succ</span><span class="Punctuation">)</span><span class="Whitespace">
-</span><span class="Keyword">const</span><span class="Whitespace"> </span><span class="Identifier">multiply</span><span class="Whitespace"> </span><span class="Operator">=</span><span class="Whitespace"> </span><span class="Identifier">fromSymbol</span><span class="Punctuation">(</span><span class="Punctuation">`</span><span class="Operator">*</span><span class="Punctuation">`</span><span class="Punctuation">)</span><span class="Whitespace">
-</span><span class="Keyword">const</span><span class="Whitespace"> </span><span class="Identifier">divide</span><span class="Whitespace"> </span><span class="Operator">=</span><span class="Whitespace"> </span><span class="Identifier">fromSymbol</span><span class="Punctuation">(</span><span class="Punctuation">`</span><span class="Operator">/</span><span class="Punctuation">`</span><span class="Punctuation">)</span><span class="Whitespace">
-
-</span><span class="Keyword">let</span><span class="Whitespace"> </span><span class="Identifier">foo</span><span class="Whitespace"> </span><span class="Operator">=</span><span class="Whitespace"> </span><span class="Identifier">chain</span><span class="Whitespace"> </span><span class="DecNumber">3</span><span class="Punctuation">:</span><span class="Whitespace">
-  </span><span class="Identifier">multiply</span><span class="Whitespace"> </span><span class="DecNumber">2</span><span class="Whitespace">
-  </span><span class="Identifier">incr</span><span class="Whitespace">
-  </span><span class="FloatNumber">14.</span><span class="Identifier">divide</span><span class="Whitespace">
-</span><span class="Identifier">doAssert</span><span class="Whitespace"> </span><span class="Identifier">foo</span><span class="Whitespace"> </span><span class="Operator">==</span><span class="Whitespace"> </span><span class="DecNumber">2</span></pre>
-&nbsp;&nbsp;<a
-href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L593"
-class="link-seesrc" target="_blank">Source</a>
-<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L593" class="link-seesrc" target="_blank" >Edit</a>
+<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L363" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 
 </dl></div>
-<div class="section" id="18">
-<h1><a class="toc-backref" href="#18">Templates</a></h1>
+<div class="section" id="19">
+<h1><a class="toc-backref" href="#19">Exports</a></h1>
 <dl class="item">
-<a id="!=>.t,,"></a>
-<dt><pre><span class="Keyword">template</span> <a href="#%21%3D%3E.t%2C%2C"><span class="Identifier">`!=&gt;`</span></a><span class="Other">(</span><span class="Identifier">params</span><span class="Other">,</span> <span class="Identifier">body</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">untyped</span></pre></dt>
-<dd>
-
-infix version of <tt class="docutils literal"><span class="pre">applicate</span></tt>, same parameter syntax
-<p><strong class="examples_text">Example:</strong></p>
-<pre class="listing"><span class="Identifier">doAssert</span><span class="Whitespace"> </span><span class="Punctuation">(</span><span class="Identifier">x</span><span class="Whitespace"> </span><span class="Operator">!=&gt;</span><span class="Whitespace"> </span><span class="Identifier">x</span><span class="Whitespace"> </span><span class="Operator">+</span><span class="Whitespace"> </span><span class="DecNumber">1</span><span class="Punctuation">)</span><span class="Operator">.</span><span class="Identifier">apply</span><span class="Punctuation">(</span><span class="DecNumber">2</span><span class="Punctuation">)</span><span class="Whitespace"> </span><span class="Operator">==</span><span class="Whitespace"> </span><span class="DecNumber">3</span><span class="Whitespace">
-</span><span class="Keyword">const</span><span class="Whitespace"> </span><span class="Identifier">foo</span><span class="Whitespace"> </span><span class="Operator">=</span><span class="Whitespace"> </span><span class="Punctuation">(</span><span class="Identifier">a</span><span class="Punctuation">,</span><span class="Whitespace"> </span><span class="Identifier">b</span><span class="Punctuation">)</span><span class="Whitespace"> </span><span class="Operator">!=&gt;</span><span class="Whitespace"> </span><span class="Identifier">a</span><span class="Whitespace"> </span><span class="Operator">+</span><span class="Whitespace"> </span><span class="Identifier">b</span><span class="Whitespace">
-</span><span class="Identifier">doAssert</span><span class="Whitespace"> </span><span class="Identifier">foo</span><span class="Operator">.</span><span class="Identifier">apply</span><span class="Punctuation">(</span><span class="DecNumber">1</span><span class="Punctuation">,</span><span class="Whitespace"> </span><span class="DecNumber">2</span><span class="Punctuation">)</span><span class="Whitespace"> </span><span class="Operator">==</span><span class="Whitespace"> </span><span class="DecNumber">3</span></pre>
-&nbsp;&nbsp;<a
-href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L282"
-class="link-seesrc" target="_blank">Source</a>
-<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L282" class="link-seesrc" target="_blank" >Edit</a>
-
-</dd>
-<a id="!=>.t"></a>
-<dt><pre><span class="Keyword">template</span> <a href="#%21%3D%3E.t"><span class="Identifier">`!=&gt;`</span></a><span class="Other">(</span><span class="Identifier">body</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">untyped</span></pre></dt>
-<dd>
-
-same as <tt class="docutils literal"><span class="pre">applicate(body)</span></tt>
-&nbsp;&nbsp;<a
-href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L290"
-class="link-seesrc" target="_blank">Source</a>
-<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L290" class="link-seesrc" target="_blank" >Edit</a>
-
-</dd>
-<a id="\=>.t,,"></a>
-<dt><pre><span class="Keyword">template</span> <a href="#%5C%3D%3E.t%2C%2C"><span class="Identifier">`\=&gt;`</span></a><span class="Other">(</span><span class="Identifier">params</span><span class="Other">,</span> <span class="Identifier">body</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">untyped</span></pre></dt>
-<dd>
-
-alias for <tt class="docutils literal"><span class="pre">!=&gt;</span></tt>
-<p><strong class="examples_text">Example:</strong></p>
-<pre class="listing"><span class="Identifier">doAssert</span><span class="Whitespace"> </span><span class="Punctuation">(</span><span class="Identifier">x</span><span class="Whitespace"> </span><span class="Operator">\=&gt;</span><span class="Whitespace"> </span><span class="Identifier">x</span><span class="Whitespace"> </span><span class="Operator">+</span><span class="Whitespace"> </span><span class="DecNumber">1</span><span class="Punctuation">)</span><span class="Operator">.</span><span class="Identifier">apply</span><span class="Punctuation">(</span><span class="DecNumber">2</span><span class="Punctuation">)</span><span class="Whitespace"> </span><span class="Operator">==</span><span class="Whitespace"> </span><span class="DecNumber">3</span><span class="Whitespace">
-</span><span class="Keyword">const</span><span class="Whitespace"> </span><span class="Identifier">foo</span><span class="Whitespace"> </span><span class="Operator">=</span><span class="Whitespace"> </span><span class="Punctuation">(</span><span class="Identifier">a</span><span class="Punctuation">,</span><span class="Whitespace"> </span><span class="Identifier">b</span><span class="Punctuation">)</span><span class="Whitespace"> </span><span class="Operator">\=&gt;</span><span class="Whitespace"> </span><span class="Identifier">a</span><span class="Whitespace"> </span><span class="Operator">+</span><span class="Whitespace"> </span><span class="Identifier">b</span><span class="Whitespace">
-</span><span class="Identifier">doAssert</span><span class="Whitespace"> </span><span class="Identifier">foo</span><span class="Operator">.</span><span class="Identifier">apply</span><span class="Punctuation">(</span><span class="DecNumber">1</span><span class="Punctuation">,</span><span class="Whitespace"> </span><span class="DecNumber">2</span><span class="Punctuation">)</span><span class="Whitespace"> </span><span class="Operator">==</span><span class="Whitespace"> </span><span class="DecNumber">3</span></pre>
-&nbsp;&nbsp;<a
-href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L294"
-class="link-seesrc" target="_blank">Source</a>
-<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L294" class="link-seesrc" target="_blank" >Edit</a>
-
-</dd>
-<a id="\=>.t"></a>
-<dt><pre><span class="Keyword">template</span> <a href="#%5C%3D%3E.t"><span class="Identifier">`\=&gt;`</span></a><span class="Other">(</span><span class="Identifier">body</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">untyped</span></pre></dt>
-<dd>
-
-alias for <tt class="docutils literal"><span class="pre">!=&gt;</span></tt>
-&nbsp;&nbsp;<a
-href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L302"
-class="link-seesrc" target="_blank">Source</a>
-<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L302" class="link-seesrc" target="_blank" >Edit</a>
-
-</dd>
-<a id="().t,ApplicateArg,varargs[untyped]"></a>
-<dt><pre><span class="Keyword">template</span> <a href="#%28%29.t%2CApplicateArg%2Cvarargs%5Buntyped%5D"><span class="Identifier">`()`</span></a><span class="Other">(</span><span class="Identifier">appl</span><span class="Other">:</span> <a href="applicates.html#ApplicateArg"><span class="Identifier">ApplicateArg</span></a><span class="Other">;</span> <span class="Identifier">args</span><span class="Other">:</span> <span class="Identifier">varargs</span><span class="Other">[</span><span class="Identifier">untyped</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">untyped</span></pre></dt>
-<dd>
-
-<p>Call operator alias for <tt class="docutils literal"><span class="pre">apply</span></tt>. Must turn on experimental Nim feature <tt class="docutils literal"><span class="pre">callOperator</span></tt> to use. Note that this experimental feature seems to be fairly broken. This definition might also go away if Nim starts to error on templates named to overload experimental operators (which it currently doesn't inconsistently with other routines), as a <tt class="docutils literal"><span class="pre">compiles</span></tt> check does not work with the <tt class="docutils literal"><span class="pre">experimental</span></tt> pragma in other modules.</p>
-<p>It's hard to conditionally define routines based on experimental features. Nim currently does not error with experimental operator overloads if they are templates, so this specific routine works. However if you run into problems with the call operator, <tt class="docutils literal"><span class="pre">import except</span></tt> should do the trick.</p>
-
-&nbsp;&nbsp;<a
-href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L500"
-class="link-seesrc" target="_blank">Source</a>
-<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L500" class="link-seesrc" target="_blank" >Edit</a>
-
-</dd>
-<a id="|<.t,untyped,ApplicateArg"></a>
-<dt><pre><span class="Keyword">template</span> <a href="#%7C%3C.t%2Cuntyped%2CApplicateArg"><span class="Identifier">`|&lt;`</span></a><span class="Other">(</span><span class="Identifier">arg</span><span class="Other">:</span> <span class="Identifier">untyped</span><span class="Other">;</span> <span class="Identifier">appl</span><span class="Other">:</span> <a href="applicates.html#ApplicateArg"><span class="Identifier">ApplicateArg</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">untyped</span></pre></dt>
-<dd>
-
-flipped <tt class="docutils literal"><span class="pre">|</span></tt>
-&nbsp;&nbsp;<a
-href="https://github.com/hlaaftana/applicates/tree/master/src/applicates.nim#L530"
-class="link-seesrc" target="_blank">Source</a>
-<a href="https://github.com/hlaaftana/applicates/edit/master/src/applicates.nim#L530" class="link-seesrc" target="_blank" >Edit</a>
-
-</dd>
-
+<a href="internals.html#ApplicateKey"><span class="Identifier">ApplicateKey</span></a>, <a href="internals.html#Applicate"><span class="Identifier">Applicate</span></a>, <a href="internals.html#ApplicateArg"><span class="Identifier">ApplicateArg</span></a>
 </dl></div>
 
   </div>
@@ -712,7 +387,7 @@ class="link-seesrc" target="_blank">Source</a>
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2021-02-12 20:23:46 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2021-02-13 12:52:42 UTC</small>
       </div>
     </div>
   </div>

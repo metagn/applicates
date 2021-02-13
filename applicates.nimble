@@ -1,6 +1,6 @@
 # Package
 
-version       = "0.2.1"
+version       = "0.3.0"
 author        = "hlaaftana"
 description   = "instantiated \"pointers\" to cached AST"
 license       = "MIT"
@@ -25,7 +25,7 @@ task tests, "run tests for multiple backends and defines":
   when declared(runTests):
     runTests(
       backends = {c, #[js]#}, 
-      optionCombos = @["", #["-d:applicatesUseMacroCache", "-d:applicatesCacheUseTable"]#]
+      #optionCombos = @["", "-d:applicatesUseMacroCache", "-d:applicatesCacheUseTable"]
     )
   else:
     echo "tests task not implemented, need nimbleutils"
