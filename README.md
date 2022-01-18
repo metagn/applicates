@@ -31,6 +31,6 @@ doAssert @[1, 2, 3, 4, 5].map(x !=> x * 2) == @[2, 4, 6, 8, 10]
 doAssert @[1, 2, 3, 4, 5].map(x \=> x * 2) == @[2, 4, 6, 8, 10]
 ```
 
-See tests for more example uses of this library. Tests are ran and docs are built with [nimbleutils](https://github.com/hlaaftana/nimbleutils).
+See tests for more example uses of this library. Tests are ran and docs are built with [nimbleutils](https://github.com/metagn/nimbleutils).
 
 Note: Since `Applicate` is implemented as `distinct ApplicateKey` and is also usually used as `static Applicate` (for which `ApplicateArg` is an alias), this library fairly pushes Nim's type system, so annotating applicates with types can be difficult. Nim macro errors in general are also not great.
