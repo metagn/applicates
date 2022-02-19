@@ -10,8 +10,6 @@ srcDir        = "src"
 
 requires "nim >= 0.20.0"
 
-import os
-
 when (NimMajor, NimMinor) >= (1, 4):
   when (compiles do: import nimbleutils):
     import nimbleutils
