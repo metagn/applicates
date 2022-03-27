@@ -14,10 +14,8 @@ proc map[T](s: seq[T], f: ApplicateArg): seq[T] =
   for i in 0..<s.len:
     let x = s[i]
     result[i] = f.apply(x)
-    # optional operators (couldnt decide on anything):
-    result[i] = f | x
-    result[i] = x |< f # accepts multiple arguments like (1, 2) |< f
-    result[i] = x |> f # does not do above, and injects x into right hand side
+    # optional operators:
+    result[i] = x |> f # injects x into right hand side
     result[i] = \f(x)
     result[i] = \x.f
     result[i] = f(x) # when experimental callOperator is enabled
@@ -27,8 +25,7 @@ proc map[T](s: seq[T], f: ApplicateArg): seq[T] =
 doAssert @[1, 2, 3, 4, 5].map(applicate do (x): x - 1) == @[0, 1, 2, 3, 4]
 doAssert @[1, 2, 3, 4, 5].map(fromSymbol(succ)) == @[2, 3, 4, 5, 6]
 # optional operators:
-doAssert @[1, 2, 3, 4, 5].map(x !=> x * 2) == @[2, 4, 6, 8, 10]
-doAssert @[1, 2, 3, 4, 5].map(x \=> x * 2) == @[2, 4, 6, 8, 10]
+doAssert @[1, 2, 3, 4, 5].map(x ==> x * 2) == @[2, 4, 6, 8, 10]
 ```
 
 See tests for more example uses of this library. Tests are ran for multiple backends.
