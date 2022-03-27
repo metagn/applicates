@@ -89,9 +89,9 @@ proc arity*(appl: Applicate): int {.compileTime.} =
   ## negative values
   runnableExamples:
     import ../applicates, ./operators
-    doAssert static(arity((x, y) !=> x + y)) == 2
-    doAssert static(arity(a !=> a)) == 1
-    doAssert static(arity(!=> 3)) == 0
+    doAssert static(arity((x, y) ==> x + y)) == 2
+    doAssert static(arity(a ==> a)) == 1
+    doAssert static(arity(==> 3)) == 0
   let n = appl.node
   case n.kind
   of RoutineNodes:

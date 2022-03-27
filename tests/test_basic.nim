@@ -56,8 +56,8 @@ test "applicate macro and apply":
 import applicates/operators
 
 test "operators":
-  check (x !=> x[^1]) | "abc" == 'c'
-  check \((name, value) \=> (let name = value; name))(a, 3) == 3
+  check "abc" |> (x ==> x[^1]) == 'c'
+  check \((name, value) ==> (let name = value; name))(a, 3) == 3
 
 test "map test":
   proc map[T](s: seq[T], f: ApplicateArg): seq[T] =
@@ -75,17 +75,17 @@ test "map test":
       yield f.apply(x)
   
   var s: seq[float]
-  for y in @[1, 2, 3, 4, 5].map(x \=> x / 7):
+  for y in @[1, 2, 3, 4, 5].map(x ==> x / 7):
     s.add(y)
   check s == @[1/7, 2/7, 3/7, 4/7, 5/7]
 
 test "toUntyped":
   const adder = toUntyped(`+`, 2)
   const toString = toUntyped(`$`)
-  check (2, 3) |< adder |< toString == "5"
+  check \adder(2, 3) |> toString == "5"
 
 test "fromSymbol":
   const adder = fromSymbol(`+`)
   const toString = fromSymbol(`$`)
   const next = fromSymbol(succ)
-  check (2, 3) |< adder |< next |< toString == "6"
+  check ((2, 3) \> adder |> next) \> toString == "6"

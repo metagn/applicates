@@ -166,7 +166,7 @@ macro applicate*(params, body): untyped =
       val
   else:
     nil
-  if params.kind != nnkPar:
+  if params.kind notin {nnkPar, nnkTupleConstr}:
     let oldParams = params
     params = newNimNode(nnkPar, oldParams)
     params.add(oldParams)
