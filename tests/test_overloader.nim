@@ -1,4 +1,9 @@
-import unittest, applicates, macros, macrocache
+when (compiles do: import nimbleutils/bridge):
+  import nimbleutils/bridge
+else:
+  import unittest
+
+import applicates, macros, macrocache
 
 type Overloadable = object
   appl: Applicate

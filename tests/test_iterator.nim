@@ -1,4 +1,9 @@
-import unittest, applicates, applicates/operators
+when (compiles do: import nimbleutils/bridge):
+  import nimbleutils/bridge
+else:
+  import unittest
+
+import applicates, applicates/operators
 
 applicate iter(iter: untyped):
   applicate (agg: static Applicate):

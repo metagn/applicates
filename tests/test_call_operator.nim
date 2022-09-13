@@ -1,6 +1,11 @@
 {.experimental: "callOperator".}
 
-import unittest, applicates
+when (compiles do: import nimbleutils/bridge):
+  import nimbleutils/bridge
+else:
+  import unittest
+
+import applicates
 
 from applicates/operators import `()`
 

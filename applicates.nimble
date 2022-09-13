@@ -24,8 +24,12 @@ task docs, "build docs for all modules":
 task tests, "run tests for multiple backends and defines":
   when declared(runTests):
     runTests(
-      backends = {c, #[js]#}, 
-      #optionCombos = @["", "-d:applicatesUseMacroCache", "-d:applicatesCacheUseTable"]
+      backends = {c, nims}, 
+      optionCombos = @[
+        "",
+        "-d:applicatesUseMacroCache",
+        "-d:applicatesCacheUseTable",
+        "-d:applicatesUseMacroCache -d:applicatesCacheUseTable"]
     )
   else:
     echo "tests task not implemented, need nimbleutils"

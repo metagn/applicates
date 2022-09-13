@@ -1,4 +1,9 @@
-import unittest, applicates, macros
+when (compiles do: import nimbleutils/bridge):
+  import nimbleutils/bridge
+else:
+  import unittest
+
+import applicates, macros
 from applicates/operators import chain
 
 type Iterator = distinct Applicate
