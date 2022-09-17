@@ -1,7 +1,6 @@
-import macros
+import macros, macrocache
 
 const cacheUseTable = defined(applicatesCacheUseTable) and not defined(nimdoc)
-const useCache = defined(applicatesUseMacroCache) and not defined(nimdoc)
 
 when cacheUseTable:
   type ApplicateKey* = string
@@ -16,26 +15,17 @@ type
   ApplicateArg* = static Applicate
     ## `static Applicate` to use for types of arguments
 
-when useCache:
-  import macrocache
-  const applicateCache* =
-    when cacheUseTable:
-      CacheTable "applicates.applicates.table"
-    else:
-      CacheSeq "applicates.applicates"
-elif cacheUseTable:
-  import tables
-  var applicateCache* {.compileTime.}: Table[string, NimNode]
-else:
-  var applicateCache* {.compileTime.}: seq[NimNode]
-    ## the cache containing the routine definition nodes of
-    ## each applicate. can be indexed by the ID of an applicate to receive
-    ## its routine node, which is meant to be put in user code and invoked
-    ## 
-    ## uses a compileTime seq by default, if you define `applicatesUseMacroCache`
-    ## then it will use Nim's `macrocache` types, if you define
-    ## `applicatesCacheUseTable` then it will use a `CacheTable` with
-    ## unique strings
+const applicateCache* =
+  when cacheUseTable:
+    CacheTable "applicates.applicates.table"
+  else:
+    CacheSeq "applicates.applicates"
+  ## the cache containing the routine definition nodes of
+  ## each applicate. can be indexed by the ID of an applicate to receive
+  ## its routine node, which is meant to be put in user code and invoked
+  ## 
+  ## if you define `applicatesCacheUseTable` then it will use
+  ## a `CacheTable` with unique strings
 
 template applicateCount*(): int = # this breaks when `proc {.compileTime.}`
   ## total number of registered applicates

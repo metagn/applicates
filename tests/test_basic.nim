@@ -84,13 +84,13 @@ test "map test":
     s.add(y)
   check s == @[1/7, 2/7, 3/7, 4/7, 5/7]
 
-test "toUntyped":
-  const adder = toUntyped(`+`, 2)
-  const toString = toUntyped(`$`)
+test "toCallerApplicate":
+  const adder = toCallerApplicate(`+`, 2)
+  const toString = toCallerApplicate(`$`)
   check \adder(2, 3) |> toString == "5"
 
-test "fromSymbol":
-  const adder = fromSymbol(`+`)
-  const toString = fromSymbol(`$`)
-  const next = fromSymbol(succ)
+test "toApplicate":
+  const adder = toApplicate(`+`)
+  const toString = toApplicate(`$`)
+  const next = toApplicate(succ)
   check ((2, 3) \> adder |> next) \> toString == "6"

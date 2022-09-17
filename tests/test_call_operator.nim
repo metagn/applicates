@@ -1,13 +1,9 @@
-{.experimental: "callOperator".}
-
 when (compiles do: import nimbleutils/bridge):
   import nimbleutils/bridge
 else:
   import unittest
 
-import applicates
-
-from applicates/operators import `()`
+import applicates, applicates/calloperator
 
 test "call operator works":
   applicate double do (x): x * 2

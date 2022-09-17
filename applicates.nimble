@@ -1,8 +1,8 @@
 # Package
 
-version       = "0.3.1"
+version       = "0.4.0"
 author        = "metagn"
-description   = "instantiated \"pointers\" to cached AST"
+description   = "generalized routine and symbol pointers"
 license       = "MIT"
 srcDir        = "src"
 
@@ -27,9 +27,7 @@ task tests, "run tests for multiple backends and defines":
       backends = {c, nims}, 
       optionCombos = @[
         "",
-        "-d:applicatesUseMacroCache",
-        "-d:applicatesCacheUseTable",
-        "-d:applicatesUseMacroCache -d:applicatesCacheUseTable"]
+        "-d:applicatesCacheUseTable"]
     )
   else:
     echo "tests task not implemented, need nimbleutils"

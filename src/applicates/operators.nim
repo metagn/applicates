@@ -1,32 +1,5 @@
 import ../applicates, macros
 
-template `==>`*(params, body): untyped =
-  ## infix version of `applicate`, same parameter syntax
-  runnableExamples:
-    import ../applicates
-    doAssert (x ==> x + 1).apply(2) == 3
-    const foo = (a, b) ==> a + b
-    doAssert foo.apply(1, 2) == 3
-  applicate(params, body)
-
-template `==>`*(body): untyped =
-  ## same as ``applicate(body)``
-  applicate(body)
-
-template `()`*(appl: ApplicateArg, args: varargs[untyped]): untyped =
-  ## Call operator alias for `apply`. Must turn on experimental Nim feature
-  ## `callOperator` to use. Note that this experimental feature seems to be
-  ## fairly broken. This definition might also go away if Nim starts to error
-  ## on templates named to overload experimental operators (which it currently
-  ## doesn't inconsistently with other routines), as a `compiles` check does
-  ## not work with the `experimental` pragma in other modules.
-  ## 
-  ## It's hard to conditionally define routines based on experimental features.
-  ## Nim currently does not error with experimental operator overloads if they
-  ## are templates, so this specific routine works. However if you run into
-  ## problems with the call operator, `import except` should do the trick.
-  appl.apply(args)
-
 proc insertApply*(call: NimNode): NimNode =
   ## turns a regular call node into an `apply` call
   result = newNimNode(if call.kind == nnkCommand: nnkCommand else: nnkCall, call)
@@ -77,9 +50,9 @@ macro `|>`*(value, call): untyped =
   runnableExamples:
     import ../applicates
 
-    const incr = fromSymbol(system.succ)
-    const multiply = fromSymbol(`*`)
-    const divide = fromSymbol(`/`)
+    const incr = toApplicate(system.succ)
+    const multiply = toApplicate(`*`)
+    const divide = toApplicate(`/`)
 
     let foo = 3 |>
       multiply(2) |>
@@ -93,13 +66,13 @@ macro `\>`*(value, call): untyped =
   runnableExamples:
     import ../applicates
 
-    const incr = fromSymbol(system.succ)
-    const multiply = fromSymbol(`*`)
-    const divide = fromSymbol(`/`)
+    const incr = toApplicate(system.succ)
+    const multiply = toApplicate(`*`)
+    const divide = toApplicate(`/`)
 
-    let foo = 3 |>
-      multiply(2) |>
-      incr |>
+    let foo = (3, 2) \>
+      multiply \>
+      incr \>
       14.divide
     doAssert foo == 2
   result = call
@@ -115,9 +88,9 @@ macro chain*(initial, calls): untyped =
   runnableExamples:
     import ../applicates
     
-    const incr = fromSymbol(system.succ)
-    const multiply = fromSymbol(`*`)
-    const divide = fromSymbol(`/`)
+    const incr = toApplicate(system.succ)
+    const multiply = toApplicate(`*`)
+    const divide = toApplicate(`/`)
 
     let foo = chain 3:
       multiply 2

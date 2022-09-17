@@ -248,20 +248,39 @@ macro applicate*(body): untyped =
     let args = newPar()
     result = getAst(applicate(args, body))
 
-macro fromSymbol*(sym: untyped): Applicate =
-  ## directly registers `sym` as an applicate node. might be more efficient
-  ## than `toUntyped` for most cases, and accepts varying arities
+template `==>`*(params, body): untyped =
+  ## infix version of `applicate`, same parameter syntax
   runnableExamples:
-    const plus = fromSymbol(`+`)
+    doAssert (x ==> x + 1).apply(2) == 3
+    const foo = (a, b) ==> a + b
+    doAssert foo.apply(1, 2) == 3
+  applicate(params, body)
+
+template `==>`*(body): untyped =
+  ## same as ``applicate(body)``
+  applicate(body)
+
+macro toApplicate*(sym: untyped): Applicate =
+  ## directly registers `sym` as an applicate node. might be more efficient
+  ## than `toCallerApplicate` for most cases, and accepts varying arities
+  runnableExamples:
+    const plus = toApplicate(`+`)
     doAssert plus.apply(1, 2) == 3
   let key = registerApplicate(sym)
   result = newCall(bindSym"Applicate", newLit(key))
 
-macro toUntyped*(sym: untyped, arity: static int): Applicate =
-  ## creates an applicate with `n` = `arity` untyped parameters
+template `&&`*(sym): untyped =
+  ## same as ``toApplicate(sym)``
+  runnableExamples:
+    const foo = &&min
+    doAssert foo.apply(1, 2) == 1
+  toApplicate(sym)
+
+macro toCallerApplicate*(sym: untyped, arity: static int): Applicate =
+  ## creates an applicate of a template with `n` = `arity` untyped parameters
   ## that calls the given symbol `sym`
   runnableExamples:
-    const adder = toUntyped(`+`, 2)
+    const adder = toCallerApplicate(`+`, 2)
     doAssert adder.apply(1, 2) == 3
   var params = newNimNode(nnkPar)
   var call = newCall(sym)
@@ -271,18 +290,18 @@ macro toUntyped*(sym: untyped, arity: static int): Applicate =
     call.add(temp)
   result = getAst(applicate(params, call))
 
-macro toUntyped*(sym: typed): Applicate =
-  ## infers the arity of `sym` from its symbol then calls `toUntyped(sym, arity)`
+macro toCallerApplicate*(sym: typed): Applicate =
+  ## infers the arity of `sym` from its symbol then calls `toCallerApplicate(sym, arity)`
   ## 
   ## if `sym` is a symbol choice, then the common arity of the choices is used.
   ## if the symbol choices do not share an arity, it will give an error
   runnableExamples:
-    const newstr = toUntyped(newString)
+    const newstr = toCallerApplicate(newString)
     var s: string
     s.setLen(4)
     doAssert newstr.apply(4) == s
 
-    const leq = toUntyped(`<=`)
+    const leq = toCallerApplicate(`<=`)
     doAssert leq.apply(1, 2)
     doAssert leq.apply(2.0, 2.0)
   let arity = inferArity(sym)
@@ -295,7 +314,7 @@ macro toUntyped*(sym: typed): Applicate =
     error("arities not shared for choices for symbol " & sym.repr, sym)
   else:
     let identSym = ident repr sym
-    result = getAst(toUntyped(identSym, arity))
+    result = getAst(toCallerApplicate(identSym, arity))
 
 macro instantiateAs*(appl: ApplicateArg, name: untyped): untyped =
   ## instantiates the applicate in the scope with the given name
@@ -303,7 +322,7 @@ macro instantiateAs*(appl: ApplicateArg, name: untyped): untyped =
   ## helps where `apply` syntax isn't enough (for example generics
   ## and overloading)
   runnableExamples:
-    instantiateAs(fromSymbol(system.succ), incr)
+    instantiateAs(toApplicate(system.succ), incr)
     doAssert incr(1) == 2
     proc foo[T](x, y: T): T {.makeApplicate.} = x + y
     proc bar(x, y: string): string {.makeApplicate.} = x & y
@@ -314,7 +333,7 @@ macro instantiateAs*(appl: ApplicateArg, name: untyped): untyped =
     doAssert baz("a", "b") == "ab"
 
     # also works but less efficient as new template is generated:
-    instantiateAs(fromSymbol(`-`), minus)
+    instantiateAs(toApplicate(`-`), minus)
     doAssert minus(4) == -4
     doAssert minus(5, 2) == 3
 
@@ -336,11 +355,46 @@ macro instantiateAs*(appl: ApplicateArg, name: untyped): untyped =
       body = newCall(n, argsSym),
       procType = nnkTemplateDef)
 
+macro toSymbol*(appl: ApplicateArg): untyped =
+  ## retrieves the symbol of the applicate,
+  ## also instantiates routine definitions
+  runnableExamples:
+    template foo(x: int): int = x + 1
+    const incr = toApplicate(foo)
+    doAssert toSymbol(incr)(1) == 2
+  let a = appl.node
+  case a.kind
+  of RoutineNodes:
+    let templName =
+      if a[0].kind in {nnkSym, nnkClosedSymChoice, nnkOpenSymChoice}:
+        ident repr a[0]
+      else:
+        a[0]
+    let declaredCheck = prefix(newCall(bindSym"declared", templName), "not")
+    result = newStmtList(newTree(nnkWhenStmt, newTree(nnkElifBranch, declaredCheck, a)), templName)
+  else:
+    result = a
+
+macro forceToSymbol*(appl: ApplicateArg): untyped =
+  ## retrieves the symbol of the applicate, also
+  ## instantiates routine definitions, without reusing definitions in scope
+  let a = appl.node
+  case a.kind
+  of RoutineNodes:
+    let templName =
+      if a[0].kind in {nnkSym, nnkClosedSymChoice, nnkOpenSymChoice}:
+        ident repr a[0]
+      else:
+        a[0]
+    result = newBlockStmt(newStmtList(a, templName))
+  else:
+    result = a
+
 macro apply*(appl: ApplicateArg, args: varargs[untyped]): untyped =
   ## applies the applicate by injecting the applicate routine
   ## (if not in scope already) then calling it with the given arguments
   runnableExamples:
-    const incr = fromSymbol(system.succ)
+    const incr = toApplicate(system.succ)
     doAssert incr.apply(1) == 2
   let a = appl.node
   case a.kind
