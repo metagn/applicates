@@ -23,6 +23,7 @@ macro `\`*(call: untyped): untyped =
   ## supports dot calls, if the given expression is not a dot expression
   ## or call or command then it will simply apply it with no arguments
   runnableExamples:
+    import ../applicates
     const foo = x ==> x + 1
     doAssert \foo(1) == 2
     doAssert \1.foo == 2
